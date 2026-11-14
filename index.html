@@ -6,14 +6,14 @@
   <title>坂道・AKB48 雑誌＆写真集＆CD カタログ</title>
   <style>
     :root {
-      --primary: #6d28d9;
-      --primary-light: #ede9fe;
-      --primary-dark: #4c1d95;
-      --bg: #f8fafc;
+      --primary: #10b981;
+      --primary-light: #d1fae5;
+      --primary-dark: #065f46;
+      --bg: #f6fbf9;
       --card: #ffffff;
       --text: #1e293b;
       --muted: #64748b;
-      --border: #e2e8f0;
+      --border: #d1fae5;
       --rakuten: #bf0000;
       --seven: #008037;
     }
@@ -26,14 +26,14 @@
       padding-bottom: 60px;
     }
     header {
-      background: linear-gradient(135deg, #4c1d95, #7c3aed);
-      color: #fff;
+      background: linear-gradient(135deg, #34d399, #6ee7b7);
+      color: #064e3b;
       padding: 18px 16px;
       text-align: center;
-      box-shadow: 0 2px 10px rgba(76, 29, 149, 0.2);
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15);
     }
     header h1 { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.02em; }
-    header p { font-size: 0.76rem; opacity: 0.92; margin-top: 4px; }
+    header p { font-size: 0.76rem; opacity: 0.9; margin-top: 4px; font-weight: 600; }
 
     .container { max-width: 900px; margin: 0 auto; padding: 14px; }
 
@@ -44,7 +44,7 @@
       border-radius: 14px;
       padding: 12px;
       margin-bottom: 16px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.05);
     }
     .tab-row {
       display: flex;
@@ -58,7 +58,7 @@
     }
     .filter-btn {
       border: 1px solid var(--border);
-      background: #f8fafc;
+      background: #f6fbf9;
       color: var(--text);
       border-radius: 999px;
       padding: 5px 12px;
@@ -77,7 +77,7 @@
     .btn {
       border: none;
       border-radius: 8px;
-      padding: 8px 12px;
+      padding: 9px 12px;
       font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
@@ -90,8 +90,8 @@
     }
     .btn:hover { opacity: 0.9; }
     .btn-primary { background: var(--primary); color: #fff; }
-    .btn-edit-save { background: #059669; color: #fff; }
-    .btn-outline { background: #fff; color: var(--primary); border: 1px solid var(--primary); }
+    .btn-edit-save { background: #047857; color: #fff; }
+    .btn-outline { background: #fff; color: var(--primary-dark); border: 1px solid var(--primary); }
     .btn-rakuten { background: var(--rakuten); color: #fff; width: 100%; }
     .btn-amazon { background: #232f3e; color: #fff; width: 100%; }
     .btn-seven { background: var(--seven); color: #fff; width: 100%; }
@@ -106,7 +106,7 @@
       border-radius: 14px;
       padding: 16px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 16px rgba(109, 40, 217, 0.12);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.12);
     }
     .admin-panel.open { display: block; }
     .admin-header {
@@ -148,7 +148,7 @@
       gap: 10px;
       align-items: center;
       background: #fff;
-      border: 1px solid var(--border);
+      border: 1px solid #e2e8f0;
       border-radius: 8px;
       padding: 8px;
     }
@@ -198,7 +198,7 @@
     .group-checks input { width: auto; }
 
     .admin-export-box {
-      background: #f8fafc;
+      background: #f6fbf9;
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 12px;
@@ -222,7 +222,7 @@
       padding: 40px 20px;
       background: #fff;
       border-radius: 14px;
-      border: 1px dashed #cbd5e1;
+      border: 1px dashed #a7f3d0;
       color: var(--muted);
       font-size: 0.88rem;
     }
@@ -232,22 +232,22 @@
       border: 1px solid var(--border);
       border-radius: 14px;
       overflow: hidden;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+      box-shadow: 0 3px 10px rgba(16, 185, 129, 0.04);
       display: flex;
       flex-direction: column;
     }
-    .card.editing { border: 2px solid #059669; }
+    .card.editing { border: 2px solid #047857; }
 
     .card-top {
       display: flex;
       gap: 12px;
       padding: 12px;
-      border-bottom: 1px solid #f1f5f9;
+      border-bottom: 1px solid #ecfdf5;
     }
     .cover-wrap {
       width: 105px;
       height: 140px;
-      background: #f1f5f9;
+      background: #f6fbf9;
       border-radius: 8px;
       overflow: hidden;
       flex-shrink: 0;
@@ -277,8 +277,8 @@
       padding: 2px 7px;
       border-radius: 999px;
     }
-    .badge-cat { background: #e0e7ff; color: #3730a3; }
-    .badge-grp { background: #f3e8ff; color: #6b21a8; }
+    .badge-cat { background: #fef3c7; color: #92400e; }
+    .badge-grp { background: var(--primary-light); color: var(--primary-dark); }
 
     .card-title {
       font-size: 0.9rem;
@@ -290,6 +290,12 @@
       font-size: 0.85rem;
       font-weight: 800;
       color: var(--primary-dark);
+      margin-bottom: 3px;
+    }
+    .card-date {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--muted);
     }
 
     .card-body {
@@ -299,7 +305,7 @@
       flex: 1;
     }
     .facts-box {
-      background: #f8fafc;
+      background: #f6fbf9;
       border-left: 3px solid var(--primary);
       padding: 7px 10px;
       border-radius: 0 8px 8px 0;
@@ -310,28 +316,6 @@
     }
 
     .card-bottom { margin-top: auto; }
-    .countdown-box {
-      background: #fff1f2;
-      border: 1px solid #fecdd3;
-      border-radius: 8px;
-      padding: 6px 8px;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-    .countdown-box.released {
-      background: #ecfdf5;
-      border-color: #a7f3d0;
-    }
-    .countdown-label { font-size: 0.68rem; font-weight: 700; color: #be123c; }
-    .countdown-box.released .countdown-label { color: #047857; }
-    .countdown-time {
-      font-size: 0.98rem;
-      font-weight: 900;
-      color: #9f1239;
-      font-variant-numeric: tabular-nums;
-    }
-    .countdown-box.released .countdown-time { color: #065f46; font-size: 0.88rem; }
-
     .shop-buttons { display: grid; gap: 6px; margin-bottom: 6px; }
 
     .admin-card-controls {
@@ -350,7 +334,7 @@
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: #0f172a;
+      background: #064e3b;
       color: #fff;
       padding: 10px 18px;
       border-radius: 999px;
@@ -368,7 +352,7 @@
 
 <header>
   <h1>📖 坂道・AKB48 雑誌＆写真集＆CD カタログ</h1>
-  <p>掲載メンバー・ページ数・店舗別特典 ＆ 発売日カウントダウン</p>
+  <p>掲載メンバー・ページ数・店舗別特典まとめ</p>
 </header>
 
 <div class="container">
@@ -411,8 +395,8 @@
           </select>
         </div>
         <div class="form-group">
-          <label>発売日（または締切日時）*</label>
-          <input type="datetime-local" id="inReleaseDate" />
+          <label>発売日 *</label>
+          <input type="date" id="inReleaseDate" />
         </div>
       </div>
 
@@ -444,7 +428,7 @@
 
       <div class="form-group">
         <label>事実だけメモ（表紙・掲載ページ数・店舗別特典など短く）</label>
-        <textarea id="inFacts" rows="3" placeholder="例：&#10;・表紙：〇〇（乃木坂46）&#10;・グラビア16P＋両面ポスター付&#10;・セブンネット限定ポストカードA"></textarea>
+        <textarea id="inFacts" rows="3" placeholder="例：&#10;・表紙：〇〇（乃木坂46）&#10;・グラビア16P＋両面ポスター付&#10;・楽天ブックス限定ポストカード付"></textarea>
       </div>
 
       <div class="form-group">
@@ -573,7 +557,6 @@
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
-  // 楽天ブックスAPI検索
   async function searchRakutenBooks() {
     const appId = document.getElementById('rakutenAppId').value.trim();
     const affId = document.getElementById('rakutenAffId').value.trim();
@@ -644,7 +627,7 @@
       const yyyy = m[1];
       const mm = String(m[2]).padStart(2, '0');
       const dd = String(m[3]).padStart(2, '0');
-      document.getElementById('inReleaseDate').value = `${yyyy}-${mm}-${dd}T00:00`;
+      document.getElementById('inReleaseDate').value = `${yyyy}-${mm}-${dd}`;
     }
 
     const titleStr = item.title || '';
@@ -689,7 +672,7 @@
     document.getElementById('cancelEditBtn').style.display = 'inline-flex';
 
     document.getElementById('inCategory').value = target.category || '雑誌';
-    document.getElementById('inReleaseDate').value = target.releaseDate || '';
+    document.getElementById('inReleaseDate').value = (target.releaseDate || '').split('T')[0];
     document.getElementById('inTitle').value = target.title || '';
     document.getElementById('inPrice').value = target.price || '';
     document.getElementById('inImageUrl').value = target.imageUrl || '';
@@ -822,16 +805,6 @@
     showToast('data.json を保存しました！GitHubにアップしてください');
   }
 
-  function formatCountdown(ms) {
-    if (ms <= 0) return '好評発売中！';
-    const totalSec = Math.floor(ms / 1000);
-    const d = Math.floor(totalSec / 86400);
-    const h = Math.floor((totalSec % 86400) / 3600);
-    const m = Math.floor((totalSec % 3600) / 60);
-    const s = totalSec % 60;
-    return `発売まで あと ${d}日 ${String(h).padStart(2,'0')}時間 ${String(m).padStart(2,'0')}分 ${String(s).padStart(2,'0')}秒`;
-  }
-
   function formatPrice(priceVal) {
     if (!priceVal) return '';
     const num = Number(String(priceVal).replace(/,/g, ''));
@@ -842,17 +815,10 @@
   }
 
   function getSortedItems(list) {
-    const now = Date.now();
     return [...list].sort((a, b) => {
-      const timeA = new Date(a.releaseDate).getTime();
-      const timeB = new Date(b.releaseDate).getTime();
-      const upcomingA = timeA > now;
-      const upcomingB = timeB > now;
-
-      if (upcomingA && !upcomingB) return -1;
-      if (!upcomingA && upcomingB) return 1;
-      if (upcomingA && upcomingB) return timeA - timeB;
-      return timeB - timeA;
+      const dateA = (a.releaseDate || '').split('T')[0];
+      const dateB = (b.releaseDate || '').split('T')[0];
+      return dateB.localeCompare(dateA); // 新しい発売日順に並び替え
     });
   }
 
@@ -863,7 +829,7 @@
     const lines = [
       `📖【${dateStr}発売】${item.title}`,
       item.facts ? item.facts : '',
-      `予約先・特典まとめ👇`,
+      `詳細・予約先まとめ👇`,
       siteUrl,
       tags
     ].filter(Boolean).join('\n');
@@ -873,7 +839,6 @@
 
   function renderCards() {
     const listEl = document.getElementById('cardList');
-    const now = Date.now();
 
     const filtered = items.filter(item => {
       const matchGrp = currentGroup === 'ALL' || (item.groups && item.groups.includes(currentGroup));
@@ -889,17 +854,13 @@
     }
 
     listEl.innerHTML = sortedItems.map(item => {
-      const targetMs = new Date(item.releaseDate).getTime();
-      const diff = targetMs - now;
-      const isReleased = diff <= 0;
-
       const coverHtml = item.imageUrl
         ? `<img src="${item.imageUrl}" alt="${item.title}" />`
         : `<div class="cover-placeholder">NO IMAGE</div>`;
 
       const grpBadges = sortGroups(item.groups).map(g => `<span class="badge badge-grp">${g}</span>`).join('');
       const priceText = formatPrice(item.price);
-      const dateDisp = item.releaseDate ? item.releaseDate.replace('T', ' ') : '';
+      const dateDisp = item.releaseDate ? item.releaseDate.split('T')[0].replace(/-/g, '/') : '';
 
       const shopBtns = [
         item.rakutenUrl ? `<a href="${item.rakutenUrl}" target="_blank" rel="noopener nofollow" class="btn btn-rakuten">📕 楽天ブックスで詳細・予約</a>` : '',
@@ -918,6 +879,7 @@
               </div>
               <div class="card-title">${item.title}</div>
               ${priceText ? `<div class="card-price">${priceText}</div>` : ''}
+              ${dateDisp ? `<div class="card-date">発売日：${dateDisp}</div>` : ''}
             </div>
           </div>
 
@@ -925,11 +887,6 @@
             ${item.facts ? `<div class="facts-box">${item.facts}</div>` : ''}
 
             <div class="card-bottom">
-              <div class="countdown-box ${isReleased ? 'released' : ''}">
-                <div class="countdown-label">発売日：${dateDisp}</div>
-                <div class="countdown-time" data-release="${targetMs}">${formatCountdown(diff)}</div>
-              </div>
-
               <div class="shop-buttons">
                 ${shopBtns}
               </div>
@@ -948,19 +905,6 @@
       `;
     }).join('');
   }
-
-  setInterval(() => {
-    const now = Date.now();
-    document.querySelectorAll('.countdown-time').forEach(el => {
-      const targetMs = Number(el.dataset.release);
-      const diff = targetMs - now;
-      if (diff <= 0 && !el.closest('.countdown-box').classList.contains('released')) {
-        renderCards();
-      } else if (diff > 0) {
-        el.textContent = formatCountdown(diff);
-      }
-    });
-  }, 1000);
 
   init();
 </script>
