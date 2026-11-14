@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>坂道・AKB48 雑誌＆写真集＆CD 発売カウントダウンカタログ</title>
+  <title>坂道・AKB48 雑誌＆写真集＆CD カタログ</title>
   <style>
     :root {
       --primary: #6d28d9;
@@ -367,8 +367,8 @@
 <body>
 
 <header>
-  <h1>📖 坂道・AKB48 発売カウントダウン＆特典まとめ</h1>
-  <p>雑誌・写真集・CDの発売日タイマー ＆ 掲載・限定特典カタログ</p>
+  <h1>📖 坂道・AKB48 雑誌＆写真集＆CD カタログ</h1>
+  <p>掲載メンバー・ページ数・店舗別特典 ＆ 発売日カウントダウン</p>
 </header>
 
 <div class="container">
@@ -393,7 +393,7 @@
         </div>
       </div>
       <div class="api-search-row">
-        <input type="text" id="rakutenQuery" style="flex:1; padding:8px; border:1px solid #cbd5e1; border-radius:8px; font-size:0.85rem;" placeholder="キーワード（例：乃木坂46 雑誌 / AKB48 写真集）" onkeydown="if(event.key==='Enter') searchRakutenBooks()" />
+        <input type="text" id="rakutenQuery" style="flex:1; padding:8px; border:1px solid #cbd5e1; border-radius:8px; font-size:0.85rem;" placeholder="キーワード（例：乃木坂46 雑誌 / 櫻坂46 写真集）" onkeydown="if(event.key==='Enter') searchRakutenBooks()" />
         <button class="btn btn-rakuten" style="width:auto; padding:8px 14px;" onclick="searchRakutenBooks()">検索</button>
       </div>
       <div class="api-results" id="apiResults"></div>
@@ -420,9 +420,9 @@
         <label>対象グループ（複数選択可）*</label>
         <div class="group-checks">
           <label><input type="checkbox" name="grpCheck" value="乃木坂46"> 乃木坂46</label>
-          <label><input type="checkbox" name="grpCheck" value="AKB48"> AKB48</label>
           <label><input type="checkbox" name="grpCheck" value="櫻坂46"> 櫻坂46</label>
           <label><input type="checkbox" name="grpCheck" value="日向坂46"> 日向坂46</label>
+          <label><input type="checkbox" name="grpCheck" value="AKB48"> AKB48</label>
         </div>
       </div>
 
@@ -483,9 +483,9 @@
     <div class="tab-row" id="groupTabs">
       <button class="filter-btn active" onclick="setGroupFilter('ALL', this)">すべて</button>
       <button class="filter-btn" onclick="setGroupFilter('乃木坂46', this)">乃木坂46</button>
-      <button class="filter-btn" onclick="setGroupFilter('AKB48', this)">AKB48</button>
       <button class="filter-btn" onclick="setGroupFilter('櫻坂46', this)">櫻坂46</button>
       <button class="filter-btn" onclick="setGroupFilter('日向坂46', this)">日向坂46</button>
+      <button class="filter-btn" onclick="setGroupFilter('AKB48', this)">AKB48</button>
     </div>
     <div class="tab-row" id="catTabs">
       <button class="filter-btn active" onclick="setCatFilter('ALL', this)">全ジャンル</button>
@@ -505,6 +505,7 @@
   const ADMIN_PASS = '4648';
   const STORAGE_KEY = 'idol_catalog_v1';
   const API_CONFIG_KEY = 'idol_rakuten_api_cfg';
+  const GROUP_ORDER = ['乃木坂46', '櫻坂46', '日向坂46', 'AKB48'];
 
   let items = [];
   let currentGroup = 'ALL';
@@ -638,7 +639,6 @@
     document.getElementById('inImageUrl').value = imgUrl;
     document.getElementById('inRakutenUrl').value = item.affiliateUrl || item.itemUrl || '';
 
-    // 発売日文字列（例：2026年11月25日）を datetime-local 形式へ変換
     const m = (item.salesDate || '').match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
     if (m) {
       const yyyy = m[1];
@@ -647,13 +647,11 @@
       document.getElementById('inReleaseDate').value = `${yyyy}-${mm}-${dd}T00:00`;
     }
 
-    // タイトルからグループ名を自動チェック
     const titleStr = item.title || '';
     document.querySelectorAll('input[name="grpCheck"]').forEach(cb => {
       cb.checked = titleStr.includes(cb.value);
     });
 
-    // カテゴリー自動推測
     if (titleStr.includes('写真集')) {
       document.getElementById('inCategory').value = '写真集';
     } else if (item.booksGenreId && String(item.booksGenreId).startsWith('002')) {
@@ -732,6 +730,14 @@
     document.querySelectorAll('input[name="grpCheck"]').forEach(cb => cb.checked = false);
   }
 
+  function sortGroups(grps) {
+    return [...(grps || [])].sort((a, b) => {
+      const idxA = GROUP_ORDER.indexOf(a);
+      const idxB = GROUP_ORDER.indexOf(b);
+      return (idxA === -1 ? 99 : idxA) - (idxB === -1 ? 99 : idxB);
+    });
+  }
+
   function saveItem() {
     const category = document.getElementById('inCategory').value;
     const releaseDate = document.getElementById('inReleaseDate').value;
@@ -743,7 +749,9 @@
     const amazonUrl = document.getElementById('inAmazonUrl').value.trim();
     const sevenUrl = document.getElementById('inSevenUrl').value.trim();
 
-    const groups = Array.from(document.querySelectorAll('input[name="grpCheck"]:checked')).map(cb => cb.value);
+    const groups = sortGroups(
+      Array.from(document.querySelectorAll('input[name="grpCheck"]:checked')).map(cb => cb.value)
+    );
 
     if (!title || !releaseDate) {
       alert('商品名と発売日は必須です！');
@@ -850,7 +858,7 @@
 
   function buildTweetUrl(item) {
     const dateStr = item.releaseDate ? item.releaseDate.split('T')[0].replace(/-/g, '/') : '';
-    const tags = (item.groups || []).map(g => `#${g}`).join(' ');
+    const tags = sortGroups(item.groups).map(g => `#${g}`).join(' ');
     const siteUrl = location.origin + location.pathname;
     const lines = [
       `📖【${dateStr}発売】${item.title}`,
@@ -889,7 +897,7 @@
         ? `<img src="${item.imageUrl}" alt="${item.title}" />`
         : `<div class="cover-placeholder">NO IMAGE</div>`;
 
-      const grpBadges = (item.groups || []).map(g => `<span class="badge badge-grp">${g}</span>`).join('');
+      const grpBadges = sortGroups(item.groups).map(g => `<span class="badge badge-grp">${g}</span>`).join('');
       const priceText = formatPrice(item.price);
       const dateDisp = item.releaseDate ? item.releaseDate.replace('T', ' ') : '';
 
