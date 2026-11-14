@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>坂道・AKB48 雑誌＆写真集＆CD 発売カウントダウンカタログ</title>
+  <style>
+    :root {
+      --primary: #6d28d9;
+      --primary-light: #ede9fe;
+      --primary-dark: #4c1d95;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --rakuten: #bf0000;
+      --seven: #008037;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      padding-bottom: 60px;
+    }
+    header {
+      background: linear-gradient(135deg, #4c1d95, #7c3aed);
+      color: #fff;
+      padding: 18px 16px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(76, 29, 149, 0.2);
+    }
+    header h1 { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.02em; }
+    header p { font-size: 0.76rem; opacity: 0.92; margin-top: 4px; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 14px; }
+
+    /* フィルターバー */
+    .filter-section {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .tab-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tab-row + .tab-row {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+    }
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { background: var(--primary-light); }
+    .filter-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-edit-save { background: #059669; color: #fff; }
+    .btn-outline { background: #fff; color: var(--primary); border: 1px solid var(--primary); }
+    .btn-rakuten { background: var(--rakuten); color: #fff; width: 100%; }
+    .btn-amazon { background: #232f3e; color: #fff; width: 100%; }
+    .btn-seven { background: var(--seven); color: #fff; width: 100%; }
+    .btn-x { background: #0f1419; color: #fff; width: 100%; font-size: 0.75rem; padding: 6px 10px; }
+    .btn-sm { padding: 5px 9px; font-size: 0.72rem; border-radius: 6px; }
+
+    /* 管理画面パネル（?admin=1 + 4648 認証時のみ表示） */
+    .admin-panel {
+      display: none;
+      background: #fff;
+      border: 2px solid var(--primary);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(109, 40, 217, 0.12);
+    }
+    .admin-panel.open { display: block; }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .admin-header h2 { font-size: 0.95rem; color: var(--primary-dark); }
+
+    /* 楽天API検索ボックス */
+    .api-box {
+      background: #fff5f5;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    .api-box h3 { font-size: 0.82rem; color: #991b1b; margin-bottom: 8px; }
+    .api-config-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    @media (max-width: 540px) { .api-config-grid { grid-template-columns: 1fr; } }
+    .api-search-row { display: flex; gap: 6px; }
+    .api-results {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+    .api-item {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px;
+    }
+    .api-item img {
+      width: 48px;
+      height: 64px;
+      object-fit: contain;
+      background: #f8fafc;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .api-item-info { flex: 1; min-width: 0; }
+    .api-item-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .api-item-sub { font-size: 0.7rem; color: var(--muted); }
+
+    .form-grid { display: grid; gap: 10px; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 540px) { .form-row-2 { grid-template-columns: 1fr; } }
+    .form-group label { display: block; font-size: 0.76rem; font-weight: 700; margin-bottom: 3px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+    .group-checks {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 6px 0;
+    }
+    .group-checks label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+    .group-checks input { width: auto; }
+
+    .admin-export-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 14px;
+    }
+    .admin-export-box p { font-size: 0.74rem; color: var(--muted); margin-bottom: 8px; }
+
+    /* カード一覧：PC2列 / スマホ1列 */
+    .card-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 580px) {
+      .card-list { grid-template-columns: 1fr; }
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px 20px;
+      background: #fff;
+      border-radius: 14px;
+      border: 1px dashed #cbd5e1;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+    }
+    .card.editing { border: 2px solid #059669; }
+
+    .card-top {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .cover-wrap {
+      width: 105px;
+      height: 140px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+    }
+    .cover-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .cover-placeholder {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-align: center;
+      padding: 8px;
+    }
+    .card-head-info { flex: 1; min-width: 0; }
+    .badges { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 5px; }
+    .badge {
+      font-size: 0.66rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+    .badge-cat { background: #e0e7ff; color: #3730a3; }
+    .badge-grp { background: #f3e8ff; color: #6b21a8; }
+
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      line-height: 1.35;
+      margin-bottom: 5px;
+    }
+    .card-price {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .card-body {
+      padding: 10px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .facts-box {
+      background: #f8fafc;
+      border-left: 3px solid var(--primary);
+      padding: 7px 10px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.78rem;
+      color: #334155;
+      white-space: pre-line;
+      margin-bottom: 10px;
+    }
+
+    .card-bottom { margin-top: auto; }
+    .countdown-box {
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      border-radius: 8px;
+      padding: 6px 8px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .countdown-box.released {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+    }
+    .countdown-label { font-size: 0.68rem; font-weight: 700; color: #be123c; }
+    .countdown-box.released .countdown-label { color: #047857; }
+    .countdown-time {
+      font-size: 0.98rem;
+      font-weight: 900;
+      color: #9f1239;
+      font-variant-numeric: tabular-nums;
+    }
+    .countdown-box.released .countdown-time { color: #065f46; font-size: 0.88rem; }
+
+    .shop-buttons { display: grid; gap: 6px; margin-bottom: 6px; }
+
+    .admin-card-controls {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      margin-top: 8px;
+      gap: 6px;
+    }
+    body.is-admin .admin-card-controls { display: flex; }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📖 坂道・AKB48 発売カウントダウン＆特典まとめ</h1>
+  <p>雑誌・写真集・CDの発売日タイマー ＆ 掲載・限定特典カタログ</p>
+</header>
+
+<div class="container">
+  <!-- 管理画面（?admin=1 + 4648 で表示） -->
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-header">
+      <h2 id="formHeading">🛠️ 管理画面（新規カタログ登録）</h2>
+      <span style="font-size:0.75rem; color:#059669; font-weight:700;">認証済み</span>
+    </div>
+
+    <!-- 楽天ブックスAPI検索ツール -->
+    <div class="api-box">
+      <h3>🔍 楽天ブックスAPI ワンタップ商品検索</h3>
+      <div class="api-config-grid">
+        <div class="form-group">
+          <label>楽天 アプリID（必須）</label>
+          <input type="text" id="rakutenAppId" placeholder="例：1012345678901234567" onchange="saveApiConfig()" />
+        </div>
+        <div class="form-group">
+          <label>楽天 アフィリエイトID（任意・入力で自動リンク化）</label>
+          <input type="text" id="rakutenAffId" placeholder="例：1a2b3c4d.5e6f7g8h..." onchange="saveApiConfig()" />
+        </div>
+      </div>
+      <div class="api-search-row">
+        <input type="text" id="rakutenQuery" style="flex:1; padding:8px; border:1px solid #cbd5e1; border-radius:8px; font-size:0.85rem;" placeholder="キーワード（例：乃木坂46 雑誌 / AKB48 写真集）" onkeydown="if(event.key==='Enter') searchRakutenBooks()" />
+        <button class="btn btn-rakuten" style="width:auto; padding:8px 14px;" onclick="searchRakutenBooks()">検索</button>
+      </div>
+      <div class="api-results" id="apiResults"></div>
+    </div>
+
+    <!-- 登録フォーム -->
+    <div class="form-grid">
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>カテゴリー *</label>
+          <select id="inCategory">
+            <option value="雑誌">📖 雑誌</option>
+            <option value="写真集">📸 写真集</option>
+            <option value="CD・Blu-ray">💿 CD・Blu-ray</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>発売日（または締切日時）*</label>
+          <input type="datetime-local" id="inReleaseDate" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>対象グループ（複数選択可）*</label>
+        <div class="group-checks">
+          <label><input type="checkbox" name="grpCheck" value="乃木坂46"> 乃木坂46</label>
+          <label><input type="checkbox" name="grpCheck" value="AKB48"> AKB48</label>
+          <label><input type="checkbox" name="grpCheck" value="櫻坂46"> 櫻坂46</label>
+          <label><input type="checkbox" name="grpCheck" value="日向坂46"> 日向坂46</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>商品名・タイトル *</label>
+        <input type="text" id="inTitle" placeholder="例：B.L.T. 2026年1月号" />
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>税込価格（円）</label>
+          <input type="number" id="inPrice" placeholder="例：1320" />
+        </div>
+        <div class="form-group">
+          <label>表紙・商品画像URL（楽天APIから自動取得）</label>
+          <input type="url" id="inImageUrl" placeholder="https://thumbnail.image.rakuten.co.jp/..." />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>事実だけメモ（表紙・掲載ページ数・店舗別特典など短く）</label>
+        <textarea id="inFacts" rows="3" placeholder="例：&#10;・表紙：〇〇（乃木坂46）&#10;・グラビア16P＋両面ポスター付&#10;・セブンネット限定ポストカードA"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>楽天ブックス アフィリエイトURL</label>
+        <input type="url" id="inRakutenUrl" placeholder="https://hb.afl.rakuten.co.jp/..." />
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Amazon URL（後から追加OK）</label>
+          <input type="url" id="inAmazonUrl" placeholder="https://..." />
+        </div>
+        <div class="form-group">
+          <label>セブンネット URL（後から追加OK）</label>
+          <input type="url" id="inSevenUrl" placeholder="https://..." />
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn btn-primary" id="submitBtn" onclick="saveItem()">＋ カタログに追加する</button>
+        <button class="btn btn-outline" id="cancelEditBtn" style="display:none;" onclick="cancelEdit()">編集をキャンセル</button>
+      </div>
+    </div>
+
+    <div class="admin-export-box">
+      <p><strong>📤 GitHub反映手順：</strong><br>
+      追加・修正したら <code>data.json</code> をダウンロードし、GitHubリポジトリにアップロードしてください。</p>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" onclick="downloadJson()">💾 GitHub用 data.json を保存</button>
+        <button class="btn btn-outline btn-sm" onclick="clearAllItems()" style="color:#dc2626; border-color:#dc2626;">全件リセット</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- グループ＆カテゴリー絞り込み -->
+  <div class="filter-section">
+    <div class="tab-row" id="groupTabs">
+      <button class="filter-btn active" onclick="setGroupFilter('ALL', this)">すべて</button>
+      <button class="filter-btn" onclick="setGroupFilter('乃木坂46', this)">乃木坂46</button>
+      <button class="filter-btn" onclick="setGroupFilter('AKB48', this)">AKB48</button>
+      <button class="filter-btn" onclick="setGroupFilter('櫻坂46', this)">櫻坂46</button>
+      <button class="filter-btn" onclick="setGroupFilter('日向坂46', this)">日向坂46</button>
+    </div>
+    <div class="tab-row" id="catTabs">
+      <button class="filter-btn active" onclick="setCatFilter('ALL', this)">全ジャンル</button>
+      <button class="filter-btn" onclick="setCatFilter('雑誌', this)">📖 雑誌</button>
+      <button class="filter-btn" onclick="setCatFilter('写真集', this)">📸 写真集</button>
+      <button class="filter-btn" onclick="setCatFilter('CD・Blu-ray', this)">💿 CD・Blu-ray</button>
+    </div>
+  </div>
+
+  <!-- カード一覧 -->
+  <div class="card-list" id="cardList"></div>
+</div>
+
+<div class="toast" id="toast">完了しました！</div>
+
+<script>
+  const ADMIN_PASS = '4648';
+  const STORAGE_KEY = 'idol_catalog_v1';
+  const API_CONFIG_KEY = 'idol_rakuten_api_cfg';
+
+  let items = [];
+  let currentGroup = 'ALL';
+  let currentCat = 'ALL';
+  let editingId = null;
+  let lastApiItems = [];
+
+  async function init() {
+    let loadedFromJson = false;
+    try {
+      const res = await fetch('./data.json?t=' + Date.now());
+      if (res.ok) {
+        const json = await res.json();
+        if (Array.isArray(json)) {
+          items = json;
+          loadedFromJson = true;
+        }
+      }
+    } catch (e) {}
+
+    if (!loadedFromJson) {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      items = saved ? JSON.parse(saved) : [];
+    }
+
+    const params = new URLSearchParams(location.search);
+    if (params.get('admin') === '1') {
+      const inputPass = prompt('管理用パスワードを入力してください：');
+      if (inputPass === ADMIN_PASS) {
+        document.getElementById('adminPanel').classList.add('open');
+        document.body.classList.add('is-admin');
+        loadApiConfig();
+      } else if (inputPass !== null) {
+        alert('パスワードが違います。閲覧モードで表示します。');
+      }
+    }
+
+    renderCards();
+  }
+
+  function loadApiConfig() {
+    const raw = localStorage.getItem(API_CONFIG_KEY);
+    if (!raw) return;
+    try {
+      const cfg = JSON.parse(raw);
+      document.getElementById('rakutenAppId').value = cfg.appId || '';
+      document.getElementById('rakutenAffId').value = cfg.affId || '';
+    } catch (e) {}
+  }
+
+  function saveApiConfig() {
+    const appId = document.getElementById('rakutenAppId').value.trim();
+    const affId = document.getElementById('rakutenAffId').value.trim();
+    localStorage.setItem(API_CONFIG_KEY, JSON.stringify({ appId, affId }));
+  }
+
+  function saveLocal() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // 楽天ブックスAPI検索
+  async function searchRakutenBooks() {
+    const appId = document.getElementById('rakutenAppId').value.trim();
+    const affId = document.getElementById('rakutenAffId').value.trim();
+    const keyword = document.getElementById('rakutenQuery').value.trim();
+
+    if (!appId) {
+      alert('先に「楽天 アプリID」を入力してください！');
+      return;
+    }
+    if (!keyword) {
+      alert('検索キーワードを入力してください！');
+      return;
+    }
+
+    const resBox = document.getElementById('apiResults');
+    resBox.innerHTML = '<div style="font-size:0.8rem; color:#64748b; padding:6px;">検索中...</div>';
+
+    try {
+      let apiUrl = `https://app.rakuten.co.jp/services/api/BooksTotal/Search/20170404?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${encodeURIComponent(appId)}&hits=15&sort=-releaseDate`;
+      if (affId) {
+        apiUrl += `&affiliateId=${encodeURIComponent(affId)}`;
+      }
+
+      const res = await fetch(apiUrl);
+      const data = await res.json();
+
+      if (data.error) {
+        resBox.innerHTML = `<div style="font-size:0.8rem; color:#dc2626; padding:6px;">エラー：${data.error_description || data.error}</div>`;
+        return;
+      }
+
+      if (!data.Items || data.Items.length === 0) {
+        resBox.innerHTML = '<div style="font-size:0.8rem; color:#64748b; padding:6px;">該当する商品が見つかりませんでした。</div>';
+        return;
+      }
+
+      lastApiItems = data.Items.map(entry => entry.Item);
+      resBox.innerHTML = lastApiItems.map((item, idx) => {
+        const imgUrl = (item.largeImageUrl || item.mediumImageUrl || '').replace('http://', 'https://');
+        return `
+          <div class="api-item">
+            <img src="${imgUrl}" alt="" />
+            <div class="api-item-info">
+              <div class="api-item-title" title="${item.title}">${item.title}</div>
+              <div class="api-item-sub">発売日：${item.salesDate || '未定'} ／ ¥${Number(item.itemPrice || 0).toLocaleString()}</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="fillFromApi(${idx})">＋ 読込</button>
+          </div>
+        `;
+      }).join('');
+    } catch (e) {
+      resBox.innerHTML = '<div style="font-size:0.8rem; color:#dc2626; padding:6px;">通信エラーが発生しました。アプリIDやネット接続を確認してください。</div>';
+    }
+  }
+
+  function fillFromApi(idx) {
+    const item = lastApiItems[idx];
+    if (!item) return;
+
+    document.getElementById('inTitle').value = item.title || '';
+    document.getElementById('inPrice').value = item.itemPrice || '';
+    const imgUrl = (item.largeImageUrl || item.mediumImageUrl || '').replace('http://', 'https://');
+    document.getElementById('inImageUrl').value = imgUrl;
+    document.getElementById('inRakutenUrl').value = item.affiliateUrl || item.itemUrl || '';
+
+    // 発売日文字列（例：2026年11月25日）を datetime-local 形式へ変換
+    const m = (item.salesDate || '').match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+    if (m) {
+      const yyyy = m[1];
+      const mm = String(m[2]).padStart(2, '0');
+      const dd = String(m[3]).padStart(2, '0');
+      document.getElementById('inReleaseDate').value = `${yyyy}-${mm}-${dd}T00:00`;
+    }
+
+    // タイトルからグループ名を自動チェック
+    const titleStr = item.title || '';
+    document.querySelectorAll('input[name="grpCheck"]').forEach(cb => {
+      cb.checked = titleStr.includes(cb.value);
+    });
+
+    // カテゴリー自動推測
+    if (titleStr.includes('写真集')) {
+      document.getElementById('inCategory').value = '写真集';
+    } else if (item.booksGenreId && String(item.booksGenreId).startsWith('002')) {
+      document.getElementById('inCategory').value = 'CD・Blu-ray';
+    } else {
+      document.getElementById('inCategory').value = '雑誌';
+    }
+
+    showToast('フォームに読み込みました！事実メモを足して追加してください');
+  }
+
+  function setGroupFilter(grp, btn) {
+    currentGroup = grp;
+    document.querySelectorAll('#groupTabs .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCards();
+  }
+
+  function setCatFilter(cat, btn) {
+    currentCat = cat;
+    document.querySelectorAll('#catTabs .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCards();
+  }
+
+  function startEdit(id) {
+    const target = items.find(i => i.id === id);
+    if (!target) return;
+
+    editingId = id;
+    document.getElementById('formHeading').textContent = '✏️ カタログを編集中...';
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.textContent = '✔ 変更内容を保存する';
+    submitBtn.className = 'btn btn-edit-save';
+    document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+
+    document.getElementById('inCategory').value = target.category || '雑誌';
+    document.getElementById('inReleaseDate').value = target.releaseDate || '';
+    document.getElementById('inTitle').value = target.title || '';
+    document.getElementById('inPrice').value = target.price || '';
+    document.getElementById('inImageUrl').value = target.imageUrl || '';
+    document.getElementById('inFacts').value = target.facts || '';
+    document.getElementById('inRakutenUrl').value = target.rakutenUrl || '';
+    document.getElementById('inAmazonUrl').value = target.amazonUrl || '';
+    document.getElementById('inSevenUrl').value = target.sevenUrl || '';
+
+    const grps = target.groups || [];
+    document.querySelectorAll('input[name="grpCheck"]').forEach(cb => {
+      cb.checked = grps.includes(cb.value);
+    });
+
+    renderCards();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function cancelEdit() {
+    editingId = null;
+    resetForm();
+    renderCards();
+  }
+
+  function resetForm() {
+    document.getElementById('formHeading').textContent = '🛠️ 管理画面（新規カタログ登録）';
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.textContent = '＋ カタログに追加する';
+    submitBtn.className = 'btn btn-primary';
+    document.getElementById('cancelEditBtn').style.display = 'none';
+
+    document.getElementById('inTitle').value = '';
+    document.getElementById('inPrice').value = '';
+    document.getElementById('inImageUrl').value = '';
+    document.getElementById('inFacts').value = '';
+    document.getElementById('inRakutenUrl').value = '';
+    document.getElementById('inAmazonUrl').value = '';
+    document.getElementById('inSevenUrl').value = '';
+    document.querySelectorAll('input[name="grpCheck"]').forEach(cb => cb.checked = false);
+  }
+
+  function saveItem() {
+    const category = document.getElementById('inCategory').value;
+    const releaseDate = document.getElementById('inReleaseDate').value;
+    const title = document.getElementById('inTitle').value.trim();
+    const price = document.getElementById('inPrice').value.trim();
+    const imageUrl = document.getElementById('inImageUrl').value.trim();
+    const facts = document.getElementById('inFacts').value.trim();
+    const rakutenUrl = document.getElementById('inRakutenUrl').value.trim();
+    const amazonUrl = document.getElementById('inAmazonUrl').value.trim();
+    const sevenUrl = document.getElementById('inSevenUrl').value.trim();
+
+    const groups = Array.from(document.querySelectorAll('input[name="grpCheck"]:checked')).map(cb => cb.value);
+
+    if (!title || !releaseDate) {
+      alert('商品名と発売日は必須です！');
+      return;
+    }
+
+    const payload = {
+      category,
+      groups,
+      releaseDate,
+      title,
+      price,
+      imageUrl,
+      facts,
+      rakutenUrl,
+      amazonUrl,
+      sevenUrl
+    };
+
+    if (editingId) {
+      const idx = items.findIndex(i => i.id === editingId);
+      if (idx !== -1) {
+        items[idx] = { ...items[idx], ...payload };
+      }
+      editingId = null;
+      resetForm();
+      saveLocal();
+      renderCards();
+      showToast('修正を反映しました！忘れずに data.json を保存してください');
+    } else {
+      items.push({
+        id: 'cat-' + Date.now(),
+        ...payload
+      });
+      resetForm();
+      saveLocal();
+      renderCards();
+      showToast('追加しました！忘れずに data.json を保存してください');
+    }
+  }
+
+  function deleteItem(id) {
+    if (!confirm('この項目を削除しますか？')) return;
+    if (editingId === id) cancelEdit();
+    items = items.filter(i => i.id !== id);
+    saveLocal();
+    renderCards();
+  }
+
+  function clearAllItems() {
+    if (!confirm('登録データをすべて空にしますか？')) return;
+    editingId = null;
+    resetForm();
+    items = [];
+    saveLocal();
+    renderCards();
+  }
+
+  function downloadJson() {
+    const sorted = getSortedItems(items);
+    const blob = new Blob([JSON.stringify(sorted, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'data.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('data.json を保存しました！GitHubにアップしてください');
+  }
+
+  function formatCountdown(ms) {
+    if (ms <= 0) return '好評発売中！';
+    const totalSec = Math.floor(ms / 1000);
+    const d = Math.floor(totalSec / 86400);
+    const h = Math.floor((totalSec % 86400) / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    return `発売まで あと ${d}日 ${String(h).padStart(2,'0')}時間 ${String(m).padStart(2,'0')}分 ${String(s).padStart(2,'0')}秒`;
+  }
+
+  function formatPrice(priceVal) {
+    if (!priceVal) return '';
+    const num = Number(String(priceVal).replace(/,/g, ''));
+    if (!isNaN(num) && num > 0) {
+      return `¥${num.toLocaleString()}（税込）`;
+    }
+    return `${priceVal}（税込）`;
+  }
+
+  function getSortedItems(list) {
+    const now = Date.now();
+    return [...list].sort((a, b) => {
+      const timeA = new Date(a.releaseDate).getTime();
+      const timeB = new Date(b.releaseDate).getTime();
+      const upcomingA = timeA > now;
+      const upcomingB = timeB > now;
+
+      if (upcomingA && !upcomingB) return -1;
+      if (!upcomingA && upcomingB) return 1;
+      if (upcomingA && upcomingB) return timeA - timeB;
+      return timeB - timeA;
+    });
+  }
+
+  function buildTweetUrl(item) {
+    const dateStr = item.releaseDate ? item.releaseDate.split('T')[0].replace(/-/g, '/') : '';
+    const tags = (item.groups || []).map(g => `#${g}`).join(' ');
+    const siteUrl = location.origin + location.pathname;
+    const lines = [
+      `📖【${dateStr}発売】${item.title}`,
+      item.facts ? item.facts : '',
+      `予約先・特典まとめ👇`,
+      siteUrl,
+      tags
+    ].filter(Boolean).join('\n');
+
+    return `https://twitter.com/intent/tweet?text=${encodeURIComponent(lines)}`;
+  }
+
+  function renderCards() {
+    const listEl = document.getElementById('cardList');
+    const now = Date.now();
+
+    const filtered = items.filter(item => {
+      const matchGrp = currentGroup === 'ALL' || (item.groups && item.groups.includes(currentGroup));
+      const matchCat = currentCat === 'ALL' || item.category === currentCat;
+      return matchGrp && matchCat;
+    });
+
+    const sortedItems = getSortedItems(filtered);
+
+    if (sortedItems.length === 0) {
+      listEl.innerHTML = `<div class="empty-state">該当するアイテムはまだ登録されていません。</div>`;
+      return;
+    }
+
+    listEl.innerHTML = sortedItems.map(item => {
+      const targetMs = new Date(item.releaseDate).getTime();
+      const diff = targetMs - now;
+      const isReleased = diff <= 0;
+
+      const coverHtml = item.imageUrl
+        ? `<img src="${item.imageUrl}" alt="${item.title}" />`
+        : `<div class="cover-placeholder">NO IMAGE</div>`;
+
+      const grpBadges = (item.groups || []).map(g => `<span class="badge badge-grp">${g}</span>`).join('');
+      const priceText = formatPrice(item.price);
+      const dateDisp = item.releaseDate ? item.releaseDate.replace('T', ' ') : '';
+
+      const shopBtns = [
+        item.rakutenUrl ? `<a href="${item.rakutenUrl}" target="_blank" rel="noopener nofollow" class="btn btn-rakuten">📕 楽天ブックスで詳細・予約</a>` : '',
+        item.amazonUrl ? `<a href="${item.amazonUrl}" target="_blank" rel="noopener nofollow" class="btn btn-amazon">📦 Amazonで詳細・予約</a>` : '',
+        item.sevenUrl ? `<a href="${item.sevenUrl}" target="_blank" rel="noopener nofollow" class="btn btn-seven">🏪 セブンネットで詳細・予約</a>` : ''
+      ].filter(Boolean).join('');
+
+      return `
+        <div class="card ${editingId === item.id ? 'editing' : ''}">
+          <div class="card-top">
+            <div class="cover-wrap">${coverHtml}</div>
+            <div class="card-head-info">
+              <div class="badges">
+                <span class="badge badge-cat">${item.category}</span>
+                ${grpBadges}
+              </div>
+              <div class="card-title">${item.title}</div>
+              ${priceText ? `<div class="card-price">${priceText}</div>` : ''}
+            </div>
+          </div>
+
+          <div class="card-body">
+            ${item.facts ? `<div class="facts-box">${item.facts}</div>` : ''}
+
+            <div class="card-bottom">
+              <div class="countdown-box ${isReleased ? 'released' : ''}">
+                <div class="countdown-label">発売日：${dateDisp}</div>
+                <div class="countdown-time" data-release="${targetMs}">${formatCountdown(diff)}</div>
+              </div>
+
+              <div class="shop-buttons">
+                ${shopBtns}
+              </div>
+
+              <a href="${buildTweetUrl(item)}" target="_blank" rel="noopener" class="btn btn-x">
+                𝕏 この情報をポストする
+              </a>
+            </div>
+
+            <div class="admin-card-controls">
+              <button class="btn btn-outline btn-sm" onclick="startEdit('${item.id}')">✏️ 編集</button>
+              <button class="btn btn-sm" style="background:#fee2e2; color:#b91c1c;" onclick="deleteItem('${item.id}')">削除</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  setInterval(() => {
+    const now = Date.now();
+    document.querySelectorAll('.countdown-time').forEach(el => {
+      const targetMs = Number(el.dataset.release);
+      const diff = targetMs - now;
+      if (diff <= 0 && !el.closest('.countdown-box').classList.contains('released')) {
+        renderCards();
+      } else if (diff > 0) {
+        el.textContent = formatCountdown(diff);
+      }
+    });
+  }, 1000);
+
+  init();
+</script>
+</body>
+</html>
