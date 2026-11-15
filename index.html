@@ -446,12 +446,15 @@
       return;
     }
 
+    // サイト自体の公開URL（?admin=1 を除いた綺麗なURL）を取得
+    const sitePublicUrl = window.location.origin + window.location.pathname;
+
     grid.innerHTML = filtered.map((item) => {
       const realIndex = catalogItems.indexOf(item);
       const catLabel = normalizeCategory(item.category);
       const dateLabel = item.date ? item.date.replace(/-/g, "/") : "未定";
-      const shareText = encodeURIComponent(`${item.group}『${item.title}』\n発売日：${dateLabel}\n#${item.group} #PR\n`);
-      const shareUrl = encodeURIComponent(item.url || window.location.href);
+      const shareText = encodeURIComponent(`${item.group}『${item.title}』\n発売日：${dateLabel}\n#${item.group}\n`);
+      const shareUrl = encodeURIComponent(sitePublicUrl);
 
       return `
         <article class="card">
