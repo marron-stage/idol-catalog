@@ -6,12 +6,14 @@
   <title>坂道・AKB48 雑誌・写真集・CD/Blu-ray カタログ</title>
   <style>
     :root {
-      --bg: #f6f8fa;
+      --bg: #eefbf3;
+      --header-bg: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
       --card: #ffffff;
       --text: #1f2937;
-      --muted: #6b7280;
-      --border: #e5e7eb;
+      --muted: #4b5563;
+      --border: #a7f3d0;
       --primary: #10b981;
+      --primary-dark: #059669;
       --rakuten: #bf0000;
       --x-black: #0f1419;
     }
@@ -24,12 +26,13 @@
       line-height: 1.5;
     }
     header {
-      background: #fff;
-      border-bottom: 1px solid var(--border);
-      padding: 16px 20px;
+      background: var(--header-bg);
+      border-bottom: 2px solid #6ee7b7;
+      padding: 18px 20px;
       position: sticky;
       top: 0;
       z-index: 100;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
     }
     .header-inner {
       max-width: 1100px;
@@ -37,11 +40,12 @@
     }
     h1 {
       margin: 0 0 4px;
-      font-size: 1.25rem;
+      font-size: 1.3rem;
+      color: #064e3b;
     }
     .pr-note {
       font-size: 0.75rem;
-      color: var(--muted);
+      color: #065f46;
       margin: 0 0 12px;
     }
     .filters {
@@ -51,35 +55,39 @@
       margin-bottom: 8px;
     }
     .filter-btn {
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--text);
+      border: 1px solid #6ee7b7;
+      background: rgba(255, 255, 255, 0.85);
+      color: #065f46;
       padding: 6px 14px;
       border-radius: 999px;
       font-size: 0.85rem;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
       transition: all 0.15s;
     }
+    .filter-btn:hover {
+      background: #ffffff;
+    }
     .filter-btn.active {
-      background: var(--primary);
+      background: var(--primary-dark);
       color: #fff;
-      border-color: var(--primary);
+      border-color: var(--primary-dark);
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
     }
     .container {
       max-width: 1100px;
-      margin: 20px auto;
+      margin: 22px auto;
       padding: 0 16px 60px;
     }
     /* 管理パネル */
     .admin-panel {
       display: none;
-      background: #fff;
+      background: #ffffff;
       border: 2px solid var(--primary);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 20px;
       margin-bottom: 24px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.12);
     }
     .admin-panel.visible { display: block; }
     .admin-panel h2 {
@@ -104,14 +112,20 @@
     label {
       font-size: 0.8rem;
       font-weight: 700;
-      color: #374151;
+      color: #065f46;
     }
     input, select, textarea {
       padding: 9px 10px;
-      border: 1px solid #d1d5db;
+      border: 1px solid #a7f3d0;
       border-radius: 8px;
       font-size: 0.9rem;
       font-family: inherit;
+      background: #f9fefb;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #ffffff;
     }
     textarea {
       min-height: 85px;
@@ -131,7 +145,7 @@
       font-size: 0.88rem;
       cursor: pointer;
     }
-    .btn-save { background: var(--primary); color: #fff; }
+    .btn-save { background: var(--primary-dark); color: #fff; }
     .btn-export { background: #2563eb; color: #fff; }
     .btn-reset { background: #ef4444; color: #fff; }
     .json-output-area {
@@ -143,30 +157,34 @@
       height: 180px;
       font-family: monospace;
       font-size: 0.8rem;
-      background: #f9fafb;
+      background: #f0fdf4;
     }
     /* カタロググリッド */
     .catalog-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 18px;
+      gap: 20px;
     }
     .card {
       background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
+      border: 2px solid var(--border);
+      border-radius: 16px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
+      transition: transform 0.15s;
+    }
+    .card:hover {
+      transform: translateY(-2px);
     }
     .card-img-wrap {
-      background: #f9fafb;
+      background: #f7fef9;
       padding: 16px;
       display: flex;
       justify-content: center;
       align-items: center;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid #d1fae5;
     }
     .card-img-wrap img {
       max-width: 100%;
@@ -189,7 +207,7 @@
     .badge {
       font-size: 0.75rem;
       font-weight: 700;
-      padding: 3px 9px;
+      padding: 3px 10px;
       border-radius: 999px;
     }
     .badge-cat { background: #fef3c7; color: #92400e; }
@@ -200,6 +218,16 @@
       margin: 0 0 10px;
       line-height: 1.45;
     }
+    .memo-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      color: #166534;
+      margin-bottom: 12px;
+      white-space: pre-wrap;
+    }
     .card-meta {
       display: flex;
       justify-content: space-between;
@@ -208,7 +236,7 @@
       margin-top: auto;
     }
     .price {
-      font-size: 1.15rem;
+      font-size: 1.18rem;
       font-weight: 800;
       color: #059669;
     }
@@ -220,15 +248,6 @@
     .release-date {
       font-size: 0.8rem;
       color: var(--muted);
-    }
-    .memo-box {
-      background: #f3f4f6;
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-size: 0.8rem;
-      color: #374151;
-      margin-bottom: 12px;
-      white-space: pre-wrap;
     }
     .card-actions {
       display: flex;
@@ -264,9 +283,10 @@
       grid-column: 1 / -1;
       text-align: center;
       padding: 40px;
-      color: var(--muted);
-      background: #fff;
-      border-radius: 12px;
+      color: #065f46;
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 14px;
     }
   </style>
 </head>
@@ -295,7 +315,6 @@
 </header>
 
 <div class="container">
-  <!-- 管理画面（URL末尾に ?admin=1 をつけると表示） -->
   <section class="admin-panel" id="adminPanel">
     <h2>🛠️ 商品登録・JSON管理パネル</h2>
     <div class="form-grid">
@@ -356,7 +375,6 @@
     </div>
   </section>
 
-  <!-- カタログ一覧 -->
   <main class="catalog-grid" id="catalogGrid"></main>
 </div>
 
@@ -371,7 +389,6 @@
     document.getElementById("adminPanel").classList.add("visible");
   }
 
-  // 初期データ読み込み（items.json → localStorage の順で統合）
   async function initCatalog() {
     let fileItems = [];
     try {
@@ -381,7 +398,7 @@
         if (Array.isArray(data)) {
           fileItems = data;
         } else if (data && typeof data === "object") {
-          fileItems = [data]; // 万が一 [ ] が抜けていても配列に自動補正
+          fileItems = [data];
         }
       }
     } catch (e) {
@@ -403,20 +420,17 @@
     renderCatalog();
   }
 
-  // 価格を安全に数値フォーマット
   function formatPrice(rawPrice) {
     const num = Number(String(rawPrice).replace(/[^0-9]/g, ""));
     return isNaN(num) || num === 0 ? "価格未定" : "¥" + num.toLocaleString("ja-JP");
   }
 
-  // カテゴリー表記ゆれ吸収
   function normalizeCategory(cat) {
     if (!cat) return "CD・Blu-ray";
     if (cat === "CD" || cat === "Blu-ray" || cat === "CD/Blu-ray") return "CD・Blu-ray";
     return cat;
   }
 
-  // カタログ描画
   function renderCatalog() {
     const grid = document.getElementById("catalogGrid");
     if (!Array.isArray(catalogItems)) catalogItems = [];
@@ -473,7 +487,6 @@
       .replace(/>/g, "&gt;");
   }
 
-  // 商品追加
   function saveItem() {
     const group = document.getElementById("inGroup").value;
     const category = document.getElementById("inCategory").value;
@@ -493,7 +506,6 @@
     catalogItems.unshift(newItem);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogItems));
 
-    // フォームクリア
     document.getElementById("inTitle").value = "";
     document.getElementById("inPrice").value = "";
     document.getElementById("inImage").value = "";
@@ -505,7 +517,6 @@
     alert("カタログに追加しました！下のJSONをコピーして items.json に貼り付けてください。");
   }
 
-  // 商品削除
   function deleteItem(index) {
     if (!confirm("この商品をリストから削除しますか？")) return;
     catalogItems.splice(index, 1);
@@ -514,7 +525,6 @@
     exportJson();
   }
 
-  // JSON書き出し（必ず [ ... ] の配列で出力）
   function exportJson() {
     const area = document.getElementById("jsonOutputArea");
     const textarea = document.getElementById("jsonText");
@@ -522,14 +532,12 @@
     textarea.value = JSON.stringify(catalogItems, null, 2);
   }
 
-  // キャッシュリセット（items.jsonの内容を再読み込み）
   function resetStorage() {
     if (!confirm("ブラウザの一時保存データを消去し、最新の items.json を再読み込みしますか？")) return;
     localStorage.removeItem(STORAGE_KEY);
     location.reload();
   }
 
-  // フィルターボタン制御
   document.querySelectorAll("#groupFilters .filter-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       document.querySelectorAll("#groupFilters .filter-btn").forEach(b => b.classList.remove("active"));
