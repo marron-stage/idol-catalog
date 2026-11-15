@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>坂道・AKB48・チーム8 雑誌・写真集・CD/Blu-ray カタログ</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>">
   <style>
     :root {
       --bg: #eefbf3;
@@ -15,7 +16,6 @@
       --primary: #10b981;
       --primary-dark: #059669;
       --rakuten: #bf0000;
-      --x-black: #0f1419;
     }
     * { box-sizing: border-box; }
     body {
@@ -327,10 +327,6 @@
     }
     .btn-rakuten {
       background: var(--rakuten);
-      color: #fff;
-    }
-    .btn-x {
-      background: var(--x-black);
       color: #fff;
     }
     .admin-card-btns {
@@ -670,17 +666,12 @@
       return;
     }
 
-    const sitePublicUrl = window.location.origin + window.location.pathname;
-
     grid.innerHTML = filtered.map((item) => {
       const realIndex = catalogItems.indexOf(item);
       const catLabel = normalizeCategory(item.category);
       const isDigital = catLabel === "デジタル写真集";
       const isTeam8 = item.group === "チーム8（OG）";
       const dateLabel = item.date ? item.date.replace(/-/g, "/") : "未定";
-      const hashTagGroup = String(item.group || "").replace(/[（）()]/g, "");
-      const shareText = encodeURIComponent(`${item.group}『${item.title}』\n発売日：${dateLabel}\n#${hashTagGroup}\n`);
-      const shareUrl = encodeURIComponent(sitePublicUrl);
       const btnText = isDigital ? "📱 楽天Koboで詳細・購入" : "📕 楽天ブックスで詳細・予約";
 
       return `
@@ -701,7 +692,6 @@
             </div>
             <div class="card-actions">
               <a class="action-btn btn-rakuten" href="${item.url || '#'}" target="_blank" rel="nofollow sponsored noopener">${btnText}</a>
-              <a class="action-btn btn-x" href="https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}" target="_blank" rel="noopener">𝕏 この情報をポストする</a>
               ${isAdmin ? `
                 <div class="admin-card-btns">
                   <button class="action-btn btn-edit" onclick="editItem(${realIndex})">✏️ 編集する</button>
