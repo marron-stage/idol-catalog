@@ -1,875 +1,554 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>坂道グループ・AKB48 カタログ</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>坂道・AKB48 雑誌・写真集・CD/Blu-ray カタログ</title>
   <style>
     :root {
-      --bg-color: #f4fbf8;
-      --card-bg: #ffffff;
+      --bg: #f6f8fa;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
       --primary: #10b981;
-      --primary-dark: #059669;
-      --primary-light: #d1fae5;
-      --text-main: #1f2937;
-      --text-sub: #6b7280;
-      --border-color: #d1fae5;
-      --rakuten-red: #bf0000;
-      --rakuten-red-hover: #990000;
-      --x-black: #111827;
+      --rakuten: #bf0000;
+      --x-black: #0f1419;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      line-height: 1.6;
-      padding-bottom: 60px;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
     }
-
     header {
-      background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-      color: white;
-      padding: 24px 16px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-
-    header h1 {
-      font-size: 1.45rem;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-    }
-
-    header p {
-      font-size: 0.85rem;
-      opacity: 0.95;
-      margin-top: 4px;
-    }
-
-    .container {
-      max-width: 1120px;
+    .header-inner {
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 20px 16px;
     }
-
-    /* フィルターエリア */
-    .filter-box {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 24px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    h1 {
+      margin: 0 0 4px;
+      font-size: 1.25rem;
     }
-
-    .filter-row {
+    .pr-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin: 0 0 12px;
+    }
+    .filters {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      align-items: center;
+      margin-bottom: 8px;
     }
-
-    .filter-row + .filter-row {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px dashed #e5e7eb;
-    }
-
     .filter-btn {
-      background: #ffffff;
-      border: 1px solid #d1d5db;
-      color: var(--text-main);
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
       padding: 6px 14px;
       border-radius: 999px;
       font-size: 0.85rem;
-      font-weight: 600;
       cursor: pointer;
-      transition: all 0.15s ease;
+      font-weight: 600;
+      transition: all 0.15s;
     }
-
-    .filter-btn:hover {
-      border-color: var(--primary);
-      color: var(--primary-dark);
-    }
-
     .filter-btn.active {
       background: var(--primary);
+      color: #fff;
       border-color: var(--primary);
-      color: #ffffff;
     }
-
-    /* カタロググリッド（ジャケット主役の縦型カード） */
-    .catalog-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 20px;
+    .container {
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 0 16px 60px;
     }
-
-    .item-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.06);
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    .item-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.12);
-    }
-
-    /* 上部ジャケット・表紙エリア（ドーンと大きく中央表示） */
-    .item-cover-wrap {
-      width: 100%;
-      height: 270px;
-      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      border-bottom: 1px solid #f1f5f9;
-      position: relative;
-    }
-
-    .item-cover-wrap img {
-      max-width: 100%;
-      max-height: 100%;
-      width: auto;
-      height: auto;
-      object-fit: contain;
-      border-radius: 6px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-    }
-
-    .no-image-box {
-      width: 160px;
-      height: 200px;
-      background: #e5e7eb;
-      color: #6b7280;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    /* カード下部情報エリア */
-    .item-body {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-
-    .badge-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-
-    .badge {
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 999px;
-    }
-
-    .badge-genre {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .badge-group {
-      background: var(--primary-light);
-      color: var(--primary-dark);
-    }
-
-    .item-title {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 8px;
-      line-height: 1.45;
-    }
-
-    .item-meta {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-
-    .item-price {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--primary-dark);
-    }
-
-    .item-price span {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-sub);
-    }
-
-    .item-date {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-sub);
-    }
-
-    .item-memo {
-      background: #f8fafc;
-      border-left: 3px solid var(--primary);
-      border-radius: 6px;
-      padding: 10px 12px;
-      font-size: 0.82rem;
-      color: #374151;
-      margin-bottom: 14px;
-      white-space: pre-wrap;
-      line-height: 1.5;
-    }
-
-    .item-actions {
-      margin-top: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .btn-rakuten {
-      display: block;
-      width: 100%;
-      background: var(--rakuten-red);
-      color: #ffffff;
-      text-align: center;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 0.9rem;
-      padding: 11px 12px;
-      border-radius: 8px;
-      transition: background 0.15s ease;
-    }
-
-    .btn-rakuten:hover {
-      background: var(--rakuten-red-hover);
-    }
-
-    .btn-x {
-      display: block;
-      width: 100%;
-      background: var(--x-black);
-      color: #ffffff;
-      text-align: center;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 0.85rem;
-      padding: 9px 12px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      transition: opacity 0.15s ease;
-    }
-
-    .btn-x:hover {
-      opacity: 0.88;
-    }
-
-    /* 管理者ボタン（?admin=1 のときのみ表示） */
-    .admin-card-controls {
-      display: none;
-      justify-content: space-between;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px dashed #e5e7eb;
-    }
-
-    body.is-admin .admin-card-controls {
-      display: flex;
-    }
-
-    .btn-edit {
-      background: #ffffff;
-      border: 1px solid var(--primary);
-      color: var(--primary-dark);
-      padding: 5px 12px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-delete {
-      background: #fee2e2;
-      border: 1px solid #fecaca;
-      color: #b91c1c;
-      padding: 5px 12px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
     /* 管理パネル */
-    #admin-panel {
+    .admin-panel {
       display: none;
-      background: #ffffff;
+      background: #fff;
       border: 2px solid var(--primary);
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 20px;
       margin-bottom: 24px;
-      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     }
-
-    body.is-admin #admin-panel {
-      display: block;
+    .admin-panel.visible { display: block; }
+    .admin-panel h2 {
+      margin: 0 0 14px;
+      font-size: 1.1rem;
+      color: #065f46;
     }
-
-    #admin-panel h2 {
-      font-size: 1.15rem;
-      color: var(--primary-dark);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .admin-section {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 16px;
-    }
-
-    .admin-section h3 {
-      font-size: 0.92rem;
-      margin-bottom: 10px;
-      color: #111827;
-    }
-
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 12px;
+      margin-bottom: 12px;
     }
-
     .form-group {
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
-
     .form-group.full {
       grid-column: 1 / -1;
     }
-
-    .form-group label {
+    label {
       font-size: 0.8rem;
       font-weight: 700;
       color: #374151;
     }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      padding: 8px 10px;
+    input, select, textarea {
+      padding: 9px 10px;
       border: 1px solid #d1d5db;
       border-radius: 8px;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       font-family: inherit;
     }
-
-    .form-group textarea {
-      min-height: 70px;
+    textarea {
+      min-height: 85px;
       resize: vertical;
     }
-
-    .admin-btn-row {
+    .admin-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       margin-top: 14px;
     }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
+    .btn {
+      padding: 10px 16px;
       border: none;
-      padding: 9px 18px;
       border-radius: 8px;
       font-weight: 700;
       font-size: 0.88rem;
       cursor: pointer;
     }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
+    .btn-save { background: var(--primary); color: #fff; }
+    .btn-export { background: #2563eb; color: #fff; }
+    .btn-reset { background: #ef4444; color: #fff; }
+    .json-output-area {
+      margin-top: 14px;
+      display: none;
     }
-
-    .btn-secondary {
-      background: #374151;
-      color: white;
-      border: none;
-      padding: 9px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-
-    .api-results {
-      margin-top: 10px;
-      display: grid;
-      gap: 8px;
-      max-height: 260px;
-      overflow-y: auto;
-    }
-
-    .api-result-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #ffffff;
-      border: 1px solid #d1d5db;
-      padding: 8px;
-      border-radius: 8px;
-    }
-
-    .api-result-item img {
-      width: 48px;
-      height: 48px;
-      object-fit: contain;
-    }
-
-    .api-result-info {
-      flex: 1;
+    .json-output-area textarea {
+      width: 100%;
+      height: 180px;
+      font-family: monospace;
       font-size: 0.8rem;
+      background: #f9fafb;
     }
-
-    .empty-state {
-      text-align: center;
-      padding: 40px 16px;
-      color: var(--text-sub);
-      grid-column: 1 / -1;
+    /* カタロググリッド */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
     }
-
-    footer {
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .card-img-wrap {
+      background: #f9fafb;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-img-wrap img {
+      max-width: 100%;
+      max-height: 240px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+    .card-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+    .badge-cat { background: #fef3c7; color: #92400e; }
+    .badge-group { background: #d1fae5; color: #065f46; }
+    .card-title {
+      font-size: 0.96rem;
+      font-weight: 700;
+      margin: 0 0 10px;
+      line-height: 1.45;
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+      margin-top: auto;
+    }
+    .price {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #059669;
+    }
+    .price small {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--muted);
+    }
+    .release-date {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .memo-box {
+      background: #f3f4f6;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      color: #374151;
+      margin-bottom: 12px;
+      white-space: pre-wrap;
+    }
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .action-btn {
+      display: block;
       text-align: center;
+      text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-rakuten {
+      background: var(--rakuten);
+      color: #fff;
+    }
+    .btn-x {
+      background: var(--x-black);
+      color: #fff;
+    }
+    .btn-del {
+      background: #fee2e2;
+      color: #b91c1c;
       font-size: 0.78rem;
-      color: var(--text-sub);
-      margin-top: 40px;
-      padding: 0 16px;
+      padding: 6px;
+    }
+    .empty-msg {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      background: #fff;
+      border-radius: 12px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>坂道グループ・AKB48 カタログ</h1>
-    <p>乃木坂46・櫻坂46・日向坂46・AKB48 の最新リリース＆掲載情報まとめ</p>
-  </header>
+<header>
+  <div class="header-inner">
+    <h1>アイドル 雑誌・写真集・CD/Blu-ray カタログ</h1>
+    <p class="pr-note">※当サイトはアフィリエイト広告（楽天アフィリエイト等）を利用しています。</p>
 
-  <div class="container">
+    <div class="filters" id="groupFilters">
+      <button class="filter-btn active" data-group="すべて">すべて</button>
+      <button class="filter-btn" data-group="乃木坂46">乃木坂46</button>
+      <button class="filter-btn" data-group="櫻坂46">櫻坂46</button>
+      <button class="filter-btn" data-group="日向坂46">日向坂46</button>
+      <button class="filter-btn" data-group="AKB48">AKB48</button>
+    </div>
 
-    <!-- 管理画面（?admin=1 で表示） -->
-    <section id="admin-panel">
-      <h2>
-        <span>カタログ管理画面</span>
-        <button type="button" class="btn-secondary" onclick="downloadJson()">data.json をダウンロード</button>
-      </h2>
+    <div class="filters" id="categoryFilters">
+      <button class="filter-btn active" data-category="すべて">すべて</button>
+      <button class="filter-btn" data-category="雑誌">雑誌</button>
+      <button class="filter-btn" data-category="写真集">写真集</button>
+      <button class="filter-btn" data-category="CD・Blu-ray">CD・Blu-ray</button>
+    </div>
+  </div>
+</header>
 
-      <!-- 楽天API検索（メンテナンス明けに有効化） -->
-      <div class="admin-section">
-        <h3>楽天ブックス API検索（自動入力）</h3>
-        <div class="form-grid" style="margin-bottom: 10px;">
-          <div class="form-group">
-            <label>楽天 アプリID（19桁）</label>
-            <input type="text" id="rakuten-app-id" placeholder="例: 1012345678901234567">
-          </div>
-          <div class="form-group">
-            <label>楽天 アフィリエイトID</label>
-            <input type="text" id="rakuten-aff-id" value="5986eeb3.3ae4a14f.5986eeb4.1808f269">
-          </div>
-        </div>
-        <div style="display: flex; gap: 8px;">
-          <input type="text" id="api-keyword" placeholder="商品名・雑誌名を入力（例: 乃木坂46 キミロス）" style="flex:1; padding:8px 10px; border:1px solid #d1d5db; border-radius:8px;">
-          <button type="button" class="btn-primary" onclick="searchRakutenBooks()">API検索</button>
-        </div>
-        <div id="api-results" class="api-results"></div>
+<div class="container">
+  <!-- 管理画面（URL末尾に ?admin=1 をつけると表示） -->
+  <section class="admin-panel" id="adminPanel">
+    <h2>🛠️ 商品登録・JSON管理パネル</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>グループ</label>
+        <select id="inGroup">
+          <option value="乃木坂46">乃木坂46</option>
+          <option value="櫻坂46">櫻坂46</option>
+          <option value="日向坂46">日向坂46</option>
+          <option value="AKB48">AKB48</option>
+        </select>
       </div>
-
-      <!-- 商品登録・編集フォーム -->
-      <div class="admin-section">
-        <h3 id="form-mode-title">新規アイテム登録 / 編集</h3>
-        <input type="hidden" id="edit-index" value="-1">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>グループ名</label>
-            <select id="item-group">
-              <option value="乃木坂46">乃木坂46</option>
-              <option value="櫻坂46">櫻坂46</option>
-              <option value="日向坂46">日向坂46</option>
-              <option value="AKB48">AKB48</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>ジャンル</label>
-            <select id="item-genre">
-              <option value="雑誌">雑誌</option>
-              <option value="写真集">写真集</option>
-              <option value="CD・Blu-ray">CD・Blu-ray</option>
-            </select>
-          </div>
-          <div class="form-group full">
-            <label>タイトル</label>
-            <input type="text" id="item-title" placeholder="例: 【楽天ブックス限定先着特典】君ロス(初回仕様限定盤 Type-A)">
-          </div>
-          <div class="form-group">
-            <label>価格（税込・数字のみ）</label>
-            <input type="number" id="item-price" placeholder="例: 1999">
-          </div>
-          <div class="form-group">
-            <label>発売日（YYYY-MM-DD）</label>
-            <input type="date" id="item-date">
-          </div>
-          <div class="form-group full">
-            <label>表紙・ジャケット画像URL</label>
-            <input type="text" id="item-image" placeholder="https://...">
-          </div>
-          <div class="form-group full">
-            <label>楽天ブックス アフィリエイトURL</label>
-            <input type="text" id="item-url" placeholder="https://hb.afl.rakuten.co.jp/...">
-          </div>
-          <div class="form-group full">
-            <label>事実メモ（フラゲ日・仕様・封入特典・掲載ページ数など）</label>
-            <textarea id="item-memo" placeholder="フラゲ日：12月1日 ／ 仕様：CD＋Blu-ray ／ 封入特典：..."></textarea>
-          </div>
-        </div>
-        <div class="admin-btn-row">
-          <button type="button" class="btn-primary" onclick="saveItem()">リストに追加 / 更新する</button>
-          <button type="button" class="btn-secondary" onclick="resetForm()">入力クリア</button>
-        </div>
+      <div class="form-group">
+        <label>ジャンル</label>
+        <select id="inCategory">
+          <option value="雑誌">雑誌</option>
+          <option value="写真集">写真集</option>
+          <option value="CD・Blu-ray">CD・Blu-ray</option>
+        </select>
       </div>
-    </section>
-
-    <!-- 絞り込みフィルター -->
-    <div class="filter-box">
-      <div class="filter-row" id="group-filters">
-        <button class="filter-btn active" data-group="all">すべて</button>
-        <button class="filter-btn" data-group="乃木坂46">乃木坂46</button>
-        <button class="filter-btn" data-group="櫻坂46">櫻坂46</button>
-        <button class="filter-btn" data-group="日向坂46">日向坂46</button>
-        <button class="filter-btn" data-group="AKB48">AKB48</button>
+      <div class="form-group">
+        <label>発売日（例: 2026-12-02）</label>
+        <input type="date" id="inDate" />
       </div>
-      <div class="filter-row" id="genre-filters">
-        <button class="filter-btn active" data-genre="all">全ジャンル</button>
-        <button class="filter-btn" data-genre="雑誌">📖 雑誌</button>
-        <button class="filter-btn" data-genre="写真集">📷 写真集</button>
-        <button class="filter-btn" data-genre="CD・Blu-ray">💿 CD・Blu-ray</button>
+      <div class="form-group">
+        <label>価格（税込・数字のみ 例: 1999）</label>
+        <input type="number" id="inPrice" placeholder="1999" />
+      </div>
+      <div class="form-group full">
+        <label>商品名</label>
+        <input type="text" id="inTitle" placeholder="【楽天ブックス限定先着特典】君ロス (初回仕様限定盤 CD＋Blu-ray Type-A)..." />
+      </div>
+      <div class="form-group full">
+        <label>表紙ジャケット画像URL（https://... から始まるURLのみ）</label>
+        <input type="text" id="inImage" placeholder="https://hbb.afl.rakuten.co.jp/..." />
+      </div>
+      <div class="form-group full">
+        <label>楽天ブックスアフィリエイトURL（https://... から始まるURLのみ）</label>
+        <input type="text" id="inUrl" placeholder="https://a.r10.to/..." />
+      </div>
+      <div class="form-group full">
+        <label>事実メモ（特典・仕様など）</label>
+        <textarea id="inMemo" placeholder="・形態：初回仕様限定盤（Type-A）&#10;・封入特典：生写真ランダム1枚"></textarea>
       </div>
     </div>
 
-    <!-- 商品カード一覧 -->
-    <main class="catalog-grid" id="catalog-grid"></main>
+    <div class="admin-actions">
+      <button class="btn btn-save" onclick="saveItem()">＋ カタログに追加する</button>
+      <button class="btn btn-export" onclick="exportJson()">📋 リストを更新する（JSON書き出し）</button>
+      <button class="btn btn-reset" onclick="resetStorage()">⚠️ ブラウザ一時データをリセット</button>
+    </div>
 
-  </div>
+    <div class="json-output-area" id="jsonOutputArea">
+      <p style="font-size:0.82rem; font-weight:700; margin:10px 0 4px;">
+        ▼ 以下のJSONを全選択コピーして、GitHubの <code>items.json</code> に上書きしてください（最初から <code>[</code> と <code>]</code> で囲まれています）：
+      </p>
+      <textarea id="jsonText" readonly onclick="this.select()"></textarea>
+    </div>
+  </section>
 
-  <footer>
-    <p>※当サイトは楽天アフィリエイトプログラムに参加しています。掲載情報は公式発表に基づく事実データです。</p>
-  </footer>
+  <!-- カタログ一覧 -->
+  <main class="catalog-grid" id="catalogGrid"></main>
+</div>
 
-  <script>
-    let catalogItems = [];
-    let currentGroup = 'all';
-    let currentGenre = 'all';
+<script>
+  const STORAGE_KEY = "idol_catalog_items_v2";
+  let catalogItems = [];
+  let currentGroup = "すべて";
+  let currentCategory = "すべて";
 
-    // 初期読み込み
-    window.addEventListener('DOMContentLoaded', async () => {
-      checkAdminMode();
-      loadSavedApiKeys();
-      await loadCatalogData();
-      setupFilters();
-      renderCatalog();
+  const isAdmin = new URLSearchParams(window.location.search).get("admin") === "1";
+  if (isAdmin) {
+    document.getElementById("adminPanel").classList.add("visible");
+  }
+
+  // 初期データ読み込み（items.json → localStorage の順で統合）
+  async function initCatalog() {
+    let fileItems = [];
+    try {
+      const res = await fetch("./items.json?t=" + Date.now());
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          fileItems = data;
+        } else if (data && typeof data === "object") {
+          fileItems = [data]; // 万が一 [ ] が抜けていても配列に自動補正
+        }
+      }
+    } catch (e) {
+      console.warn("items.json読み込みスキップ:", e);
+    }
+
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        catalogItems = Array.isArray(parsed) ? parsed : fileItems;
+      } catch {
+        catalogItems = fileItems;
+      }
+    } else {
+      catalogItems = fileItems;
+    }
+
+    renderCatalog();
+  }
+
+  // 価格を安全に数値フォーマット
+  function formatPrice(rawPrice) {
+    const num = Number(String(rawPrice).replace(/[^0-9]/g, ""));
+    return isNaN(num) || num === 0 ? "価格未定" : "¥" + num.toLocaleString("ja-JP");
+  }
+
+  // カテゴリー表記ゆれ吸収
+  function normalizeCategory(cat) {
+    if (!cat) return "CD・Blu-ray";
+    if (cat === "CD" || cat === "Blu-ray" || cat === "CD/Blu-ray") return "CD・Blu-ray";
+    return cat;
+  }
+
+  // カタログ描画
+  function renderCatalog() {
+    const grid = document.getElementById("catalogGrid");
+    if (!Array.isArray(catalogItems)) catalogItems = [];
+
+    const filtered = catalogItems.filter(item => {
+      const matchGroup = currentGroup === "すべて" || item.group === currentGroup;
+      const matchCat = currentCategory === "すべて" || normalizeCategory(item.category) === currentCategory;
+      return matchGroup && matchCat;
     });
 
-    // ?admin=1 で管理モード有効化
-    function checkAdminMode() {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('admin') === '1') {
-        document.body.classList.add('is-admin');
-      }
+    if (filtered.length === 0) {
+      grid.innerHTML = `<div class="empty-msg">該当する商品がありません。</div>`;
+      return;
     }
 
-    function loadSavedApiKeys() {
-      const savedAppId = localStorage.getItem('rakuten_app_id');
-      const savedAffId = localStorage.getItem('rakuten_aff_id');
-      if (savedAppId) document.getElementById('rakuten-app-id').value = savedAppId;
-      if (savedAffId) document.getElementById('rakuten-aff-id').value = savedAffId;
-    }
+    grid.innerHTML = filtered.map((item) => {
+      const realIndex = catalogItems.indexOf(item);
+      const catLabel = normalizeCategory(item.category);
+      const dateLabel = item.date ? item.date.replace(/-/g, "/") : "未定";
+      const shareText = encodeURIComponent(`${item.group}『${item.title}』\n発売日：${dateLabel}\n#${item.group} #PR\n`);
+      const shareUrl = encodeURIComponent(item.url || window.location.href);
 
-    // data.json 読み込み（ローカル編集キャッシュがあれば優先）
-    async function loadCatalogData() {
-      const localDraft = localStorage.getItem('idol_catalog_draft');
-      if (document.body.classList.contains('is-admin') && localDraft) {
-        try {
-          catalogItems = JSON.parse(localDraft);
-          return;
-        } catch (e) {}
-      }
-      try {
-        const res = await fetch('data.json?t=' + Date.now());
-        if (res.ok) {
-          catalogItems = await res.json();
-        }
-      } catch (e) {
-        console.warn('data.json の読み込みに失敗しました:', e);
-        catalogItems = [];
-      }
-    }
-
-    // フィルター設定
-    function setupFilters() {
-      document.querySelectorAll('#group-filters .filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('#group-filters .filter-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          currentGroup = btn.dataset.group;
-          renderCatalog();
-        });
-      });
-
-      document.querySelectorAll('#genre-filters .filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('#genre-filters .filter-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          currentGenre = btn.dataset.genre;
-          renderCatalog();
-        });
-      });
-    }
-
-    // カタログ描画
-    function renderCatalog() {
-      const grid = document.getElementById('catalog-grid');
-      grid.innerHTML = '';
-
-      const filtered = catalogItems
-        .map((item, idx) => ({ ...item, _originalIndex: idx }))
-        .filter(item => {
-          const matchGroup = currentGroup === 'all' || item.group === currentGroup;
-          const matchGenre = currentGenre === 'all' || item.genre === currentGenre;
-          return matchGroup && matchGenre;
-        })
-        .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-
-      if (filtered.length === 0) {
-        grid.innerHTML = '<div class="empty-state">該当するアイテムはまだ登録されていません。</div>';
-        return;
-      }
-
-      filtered.forEach(item => {
-        const card = document.createElement('article');
-        card.className = 'item-card';
-
-        const genreIcon = item.genre === '雑誌' ? '📖 ' : item.genre === '写真集' ? '📷 ' : '💿 ';
-        const formattedPrice = item.price ? `¥${Number(item.price).toLocaleString()} <span>(税込)</span>` : '';
-        const formattedDate = item.date ? `発売日：${item.date.replace(/-/g, '/')}` : '';
-
-        const imageHtml = item.image
-          ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy">`
-          : `<div class="no-image-box">NO IMAGE</div>`;
-
-        const memoHtml = item.memo
-          ? `<div class="item-memo">${escapeHtml(item.memo)}</div>`
-          : '';
-
-        const xText = encodeURIComponent(`【${item.group}】${item.title}\n${formattedDate}\n#楽天ブックス #${item.group}`);
-        const xShareUrl = `https://twitter.com/intent/tweet?text=${xText}&url=${encodeURIComponent(window.location.href.split('?')[0])}`;
-
-        card.innerHTML = `
-          <div class="item-cover-wrap">
-            ${imageHtml}
+      return `
+        <article class="card">
+          <div class="card-img-wrap">
+            <img src="${item.image || ''}" alt="${item.title || ''}" loading="lazy" />
           </div>
-          <div class="item-body">
-            <div class="badge-row">
-              <span class="badge badge-genre">${genreIcon}${escapeHtml(item.genre || '')}</span>
-              <span class="badge badge-group">${escapeHtml(item.group || '')}</span>
+          <div class="card-body">
+            <div class="badges">
+              <span class="badge badge-cat">${catLabel}</span>
+              <span class="badge badge-group">${item.group || ''}</span>
             </div>
-            <h3 class="item-title">${escapeHtml(item.title || '')}</h3>
-            <div class="item-meta">
-              <div class="item-price">${formattedPrice}</div>
-              <div class="item-date">${formattedDate}</div>
+            <h2 class="card-title">${item.title || ''}</h2>
+            ${item.memo ? `<div class="memo-box">${escapeHtml(item.memo)}</div>` : ""}
+            <div class="card-meta">
+              <div class="price">${formatPrice(item.price)} <small>(税込)</small></div>
+              <div class="release-date">発売日：${dateLabel}</div>
             </div>
-            ${memoHtml}
-            <div class="item-actions">
-              <a href="${escapeHtml(item.url || '#')}" target="_blank" rel="nofollow sponsored noopener" class="btn-rakuten">📕 楽天ブックスで詳細・予約</a>
-              <a href="${xShareUrl}" target="_blank" rel="noopener" class="btn-x">𝕏 この情報をポストする</a>
-            </div>
-            <div class="admin-card-controls">
-              <button type="button" class="btn-edit" onclick="editItem(${item._originalIndex})">✏️ 編集</button>
-              <button type="button" class="btn-delete" onclick="deleteItem(${item._originalIndex})">削除</button>
+            <div class="card-actions">
+              <a class="action-btn btn-rakuten" href="${item.url || '#'}" target="_blank" rel="nofollow sponsored noopener">📕 楽天ブックスで詳細・予約</a>
+              <a class="action-btn btn-x" href="https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}" target="_blank" rel="noopener">𝕏 この情報をポストする</a>
+              ${isAdmin ? `<button class="action-btn btn-del" onclick="deleteItem(${realIndex})">🗑️ この商品を削除</button>` : ""}
             </div>
           </div>
-        `;
-        grid.appendChild(card);
-      });
+        </article>
+      `;
+    }).join("");
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  // 商品追加
+  function saveItem() {
+    const group = document.getElementById("inGroup").value;
+    const category = document.getElementById("inCategory").value;
+    const date = document.getElementById("inDate").value;
+    const price = Number(String(document.getElementById("inPrice").value).replace(/[^0-9]/g, ""));
+    const title = document.getElementById("inTitle").value.trim();
+    const image = document.getElementById("inImage").value.trim();
+    const url = document.getElementById("inUrl").value.trim();
+    const memo = document.getElementById("inMemo").value.trim();
+
+    if (!title || !url) {
+      alert("「商品名」と「楽天ブックスアフィリエイトURL」は必須です。");
+      return;
     }
 
-    // 管理画面：追加・更新
-    function saveItem() {
-      const idx = parseInt(document.getElementById('edit-index').value, 10);
-      const newItem = {
-        group: document.getElementById('item-group').value,
-        genre: document.getElementById('item-genre').value,
-        title: document.getElementById('item-title').value.trim(),
-        price: document.getElementById('item-price').value.trim(),
-        date: document.getElementById('item-date').value,
-        image: document.getElementById('item-image').value.trim(),
-        url: document.getElementById('item-url').value.trim(),
-        memo: document.getElementById('item-memo').value.trim()
-      };
+    const newItem = { group, category, title, date, price, image, url, memo };
+    catalogItems.unshift(newItem);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogItems));
 
-      if (!newItem.title) {
-        alert('タイトルを入力してください。');
-        return;
-      }
+    // フォームクリア
+    document.getElementById("inTitle").value = "";
+    document.getElementById("inPrice").value = "";
+    document.getElementById("inImage").value = "";
+    document.getElementById("inUrl").value = "";
+    document.getElementById("inMemo").value = "";
 
-      if (idx >= 0) {
-        catalogItems[idx] = newItem;
-      } else {
-        catalogItems.unshift(newItem);
-      }
+    renderCatalog();
+    exportJson();
+    alert("カタログに追加しました！下のJSONをコピーして items.json に貼り付けてください。");
+  }
 
-      localStorage.setItem('idol_catalog_draft', JSON.stringify(catalogItems));
-      resetForm();
+  // 商品削除
+  function deleteItem(index) {
+    if (!confirm("この商品をリストから削除しますか？")) return;
+    catalogItems.splice(index, 1);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogItems));
+    renderCatalog();
+    exportJson();
+  }
+
+  // JSON書き出し（必ず [ ... ] の配列で出力）
+  function exportJson() {
+    const area = document.getElementById("jsonOutputArea");
+    const textarea = document.getElementById("jsonText");
+    area.style.display = "block";
+    textarea.value = JSON.stringify(catalogItems, null, 2);
+  }
+
+  // キャッシュリセット（items.jsonの内容を再読み込み）
+  function resetStorage() {
+    if (!confirm("ブラウザの一時保存データを消去し、最新の items.json を再読み込みしますか？")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+
+  // フィルターボタン制御
+  document.querySelectorAll("#groupFilters .filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#groupFilters .filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentGroup = btn.dataset.group;
       renderCatalog();
-      alert('リストに反映しました！最後に「data.json をダウンロード」してGitHubへアップロードしてください。');
-    }
+    });
+  });
 
-    function editItem(idx) {
-      const item = catalogItems[idx];
-      if (!item) return;
-      document.getElementById('edit-index').value = idx;
-      document.getElementById('item-group').value = item.group || '乃木坂46';
-      document.getElementById('item-genre').value = item.genre || 'CD・Blu-ray';
-      document.getElementById('item-title').value = item.title || '';
-      document.getElementById('item-price').value = item.price || '';
-      document.getElementById('item-date').value = item.date || '';
-      document.getElementById('item-image').value = item.image || '';
-      document.getElementById('item-url').value = item.url || '';
-      document.getElementById('item-memo').value = item.memo || '';
-      document.getElementById('form-mode-title').textContent = '編集中：' + item.title;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function deleteItem(idx) {
-      if (!confirm('このアイテムを削除しますか？')) return;
-      catalogItems.splice(idx, 1);
-      localStorage.setItem('idol_catalog_draft', JSON.stringify(catalogItems));
+  document.querySelectorAll("#categoryFilters .filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#categoryFilters .filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentCategory = btn.dataset.category;
       renderCatalog();
-    }
+    });
+  });
 
-    function resetForm() {
-      document.getElementById('edit-index').value = '-1';
-      document.getElementById('item-title').value = '';
-      document.getElementById('item-price').value = '';
-      document.getElementById('item-date').value = '';
-      document.getElementById('item-image').value = '';
-      document.getElementById('item-url').value = '';
-      document.getElementById('item-memo').value = '';
-      document.getElementById('form-mode-title').textContent = '新規アイテム登録 / 編集';
-    }
-
-    function downloadJson() {
-      const blob = new Blob([JSON.stringify(catalogItems, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'data.json';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    // 楽天ブックスAPI検索
-    async function searchRakutenBooks() {
-      const appId = document.getElementById('rakuten-app-id').value.trim();
-      const affId = document.getElementById('rakuten-aff-id').value.trim();
-      const keyword = document.getElementById('api-keyword').value.trim();
-
-      if (!appId || !keyword) {
-        alert('アプリIDと検索キーワードを入力してください。');
-        return;
-      }
-
-      localStorage.setItem('rakuten_app_id', appId);
-      localStorage.setItem('rakuten_aff_id', affId);
-
-      const resultsDiv = document.getElementById('api-results');
-      resultsDiv.innerHTML = '<div style="font-size:0.85rem; color:#6b7280;">検索中...</div>';
-
-      try {
-        const endpoint = `https://app.rakuten.co.jp/services/api/BooksTotal/Search/20170404?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${encodeURIComponent(appId)}&affiliateId=${encodeURIComponent(affId)}&hits=10`;
-        const res = await fetch(endpoint);
-        const data = await res.json();
-
-        if (!data.Items || data.Items.length === 0) {
-          resultsDiv.innerHTML = '<div style="font-size:0.85rem; color:#6b7280;">該当商品が見つかりませんでした。</div>';
-          return;
-        }
-
-        resultsDiv.innerHTML = '';
-        data.Items.forEach(entry => {
-          const item = entry.Item;
-          const highResImg = (item.largeImageUrl || item.mediumImageUrl || '').replace('?_ex=200x200', '?_ex=400x400');
-          const row = document.createElement('div');
-          row.className = 'api-result-item';
-          row.innerHTML = `
-            <img src="${escapeHtml(highResImg)}" alt="">
-            <div class="api-result-info">
-              <strong>${escapeHtml(item.title)}</strong><br>
-              <span>¥${Number(item.itemPrice).toLocaleString()} / 発売日: ${escapeHtml(item.salesDate || '')}</span>
-            </div>
-            <button type="button" class="btn-primary" style="padding:6px 10px; font-size:0.78rem;">フォームへ反映</button>
-          `;
-          row.querySelector('button').addEventListener('click', () => {
-            document.getElementById('item-title').value = item.title || '';
-            document.getElementById('item-price').value = item.itemPrice || '';
-            document.getElementById('item-image').value = highResImg;
-            document.getElementById('item-url').value = item.affiliateUrl || item.itemUrl || '';
-            const dateMatch = (item.salesDate || '').match(/(\d{4})年(\d{2})月(\d{2})日/);
-            if (dateMatch) {
-              document.getElementById('item-date').value = `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
-            }
-          });
-          resultsDiv.appendChild(row);
-        });
-      } catch (e) {
-        resultsDiv.innerHTML = '<div style="font-size:0.85rem; color:#b91c1c;">API通信エラーが発生しました（楽天APIがメンテナンス中の可能性があります）。</div>';
-      }
-    }
-
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-  </script>
+  initCatalog();
+</script>
 </body>
 </html>
