@@ -1,750 +1,423 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>坂道・AKB48 雑誌・写真集・CD/Blu-ray カタログ</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>チーム8・アイドル写真集＆デジタル写真集レビューカタログ</title>
   <style>
     :root {
-      --bg: #eefbf3;
-      --header-bg: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #4b5563;
-      --border: #a7f3d0;
-      --primary: #10b981;
-      --primary-dark: #059669;
-      --rakuten: #bf0000;
-      --x-black: #0f1419;
+      --primary: #e6005c;       /* メインカラー（アイドル・グラビア感のある華やかなピンク） */
+      --team8-color: #0099ff;   /* チーム8イメージの爽やかなブルー */
+      --bg-color: #f8f9fb;
+      --card-bg: #ffffff;
+      --text-main: #222222;
+      --text-sub: #666666;
+      --border: #e2e6ec;
     }
-    * { box-sizing: border-box; }
-    body {
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
+      padding: 0;
     }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    /* ヘッダー */
     header {
-      background: var(--header-bg);
-      border-bottom: 2px solid #6ee7b7;
-      padding: 18px 20px;
+      background: linear-gradient(135deg, #1a1f2c 0%, #2d3548 100%);
+      color: #fff;
+      padding: 28px 16px 24px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.35rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      font-size: 0.82rem;
+      color: #cbd5e1;
+    }
+
+    /* タブナビゲーション（スマホ横スクロール対応） */
+    .tab-wrapper {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
-    .header-inner {
-      max-width: 1100px;
+
+    .tab-container {
+      max-width: 960px;
       margin: 0 auto;
-    }
-    h1 {
-      margin: 0 0 4px;
-      font-size: 1.3rem;
-      color: #064e3b;
-    }
-    .pr-note {
-      font-size: 0.75rem;
-      color: #065f46;
-      margin: 0 0 12px;
-    }
-    .filters {
       display: flex;
-      flex-wrap: wrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 10px 12px;
       gap: 8px;
-      margin-bottom: 8px;
     }
-    .filter-btn {
-      border: 1px solid #6ee7b7;
-      background: rgba(255, 255, 255, 0.85);
-      color: #065f46;
-      padding: 6px 14px;
+
+    .tab-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      flex: 0 0 auto;
+      padding: 9px 16px;
+      border: 1.5px solid var(--border);
       border-radius: 999px;
+      background: #fff;
+      color: var(--text-sub);
       font-size: 0.85rem;
+      font-weight: 700;
       cursor: pointer;
-      font-weight: 700;
-      transition: all 0.15s;
+      transition: all 0.2s ease;
     }
-    .filter-btn:hover {
-      background: #ffffff;
-    }
-    .filter-btn.active {
-      background: var(--primary-dark);
-      color: #fff;
-      border-color: var(--primary-dark);
-      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
-    }
-    .container {
-      max-width: 1100px;
-      margin: 22px auto;
-      padding: 0 16px 60px;
-    }
-    /* 管理パネル */
-    .admin-panel {
-      display: none;
-      background: #ffffff;
-      border: 2px solid var(--primary);
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 24px;
-      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.12);
-    }
-    .admin-panel.visible { display: block; }
-    .admin-panel h2 {
-      margin: 0 0 12px;
-      font-size: 1.1rem;
-      color: #065f46;
-    }
-    .api-box {
-      background: #f0fdf4;
-      border: 1px solid #86efac;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-    .api-box h3 {
-      margin: 0 0 10px;
-      font-size: 0.98rem;
-      color: #065f46;
-    }
-    .api-results {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 12px;
-      margin-top: 14px;
-      max-height: 440px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-    .api-card {
-      background: #ffffff;
-      border: 1px solid #bbf7d0;
-      border-radius: 10px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 0.82rem;
-    }
-    .api-card img {
-      height: 120px;
-      object-fit: contain;
-      margin: 0 auto;
-    }
-    .api-card-title {
-      font-weight: 700;
-      line-height: 1.35;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .form-group.full {
-      grid-column: 1 / -1;
-    }
-    label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #065f46;
-    }
-    input, select, textarea {
-      padding: 9px 10px;
-      border: 1px solid #a7f3d0;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-family: inherit;
-      background: #f9fefb;
-    }
-    input:focus, select:focus, textarea:focus {
-      outline: none;
+
+    .tab-btn:hover {
       border-color: var(--primary);
-      background: #ffffff;
+      color: var(--primary);
     }
-    textarea {
-      min-height: 80px;
-      resize: vertical;
+
+    .tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 3px 10px rgba(230, 0, 92, 0.25);
     }
-    .admin-actions {
+
+    /* チーム8タブ選択時だけチーム8カラーにする演出 */
+    .tab-btn[data-category="team8"].active {
+      background: var(--team8-color);
+      border-color: var(--team8-color);
+      box-shadow: 0 3px 10px rgba(0, 153, 255, 0.28);
+    }
+
+    /* メインコンテンツ */
+    main {
+      max-width: 960px;
+      margin: 20px auto 0;
+      padding: 0 14px;
+    }
+
+    .status-bar {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 0.85rem;
+      color: var(--text-sub);
     }
-    .btn {
-      padding: 10px 16px;
-      border: none;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.88rem;
-      cursor: pointer;
+
+    .pr-notice {
+      font-size: 0.72rem;
+      color: #888;
+      background: #eef1f5;
+      padding: 2px 8px;
+      border-radius: 4px;
     }
-    .btn-save { background: var(--primary-dark); color: #fff; }
-    .btn-api { background: #0284c7; color: #fff; }
-    .btn-export { background: #2563eb; color: #fff; }
-    .btn-reset { background: #ef4444; color: #fff; }
-    .json-output-area {
-      margin-top: 14px;
-      display: none;
-    }
-    .json-output-area textarea {
-      width: 100%;
-      height: 180px;
-      font-family: monospace;
-      font-size: 0.8rem;
-      background: #f0fdf4;
-    }
-    /* カタロググリッド */
-    .catalog-grid {
+
+    /* カード一覧グリッド */
+    .card-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
     }
-    .card {
-      background: var(--card);
-      border: 2px solid var(--border);
-      border-radius: 16px;
+
+    /* 各作品のレビューカード */
+    .book-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
-      transition: transform 0.15s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      transition: transform 0.2s ease;
     }
-    .card:hover {
+
+    .book-card:hover {
       transform: translateY(-2px);
     }
-    .card-img-wrap {
-      background: #f7fef9;
-      padding: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-bottom: 1px solid #d1fae5;
+
+    .book-card.hidden {
+      display: none;
     }
-    .card-img-wrap img {
-      max-width: 100%;
-      max-height: 240px;
-      object-fit: contain;
+
+    /* カード上部：サムネイル風表紙エリア（画像なしでも綺麗に映えるデザイン） */
+    .cover-area {
+      position: relative;
+      background: linear-gradient(135deg, #eef6ff 0%, #f8f0ff 100%);
+      padding: 22px 16px 18px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    /* 画像を入れる場合は img.cover-img を使う */
+    .cover-img {
+      max-height: 210px;
+      width: auto;
       border-radius: 6px;
-    }
-    .card-body {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-    .badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
       margin-bottom: 8px;
     }
+
+    .badge-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
     .badge {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       padding: 3px 10px;
       border-radius: 999px;
+      background: #333;
+      color: #fff;
     }
-    .badge-cat { background: #fef3c7; color: #92400e; }
-    .badge-group { background: #d1fae5; color: #065f46; }
-    .card-title {
-      font-size: 0.96rem;
-      font-weight: 700;
-      margin: 0 0 10px;
-      line-height: 1.45;
+
+    .badge.team8 {
+      background: var(--team8-color);
     }
-    .memo-box {
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-size: 0.8rem;
-      color: #166534;
-      margin-bottom: 12px;
-      white-space: pre-wrap;
+
+    .badge.digital {
+      background: #ff7a00;
     }
-    .card-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 12px;
-      margin-top: auto;
-    }
-    .price {
-      font-size: 1.18rem;
+
+    .member-name {
+      font-size: 1.15rem;
       font-weight: 800;
-      color: #059669;
+      color: var(--text-main);
     }
-    .price small {
-      font-size: 0.75rem;
-      font-weight: 400;
-      color: var(--muted);
+
+    .book-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #444;
+      margin-top: 2px;
     }
-    .release-date {
-      font-size: 0.8rem;
-      color: var(--muted);
+
+    /* カード本文 */
+    .card-body {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
-    .card-actions {
+
+    .spec-box {
+      background: #f8f9fb;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      margin-bottom: 12px;
+    }
+
+    .review-text {
+      font-size: 0.88rem;
+      color: #333;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+
+    .review-label {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    /* アフィリエイトボタンエリア */
+    .btn-group {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
-    .action-btn {
+
+    .aff-btn {
       display: block;
       text-align: center;
       text-decoration: none;
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 700;
-      cursor: pointer;
-      border: none;
+      padding: 11px 14px;
+      border-radius: 8px;
+      transition: opacity 0.2s;
     }
-    .btn-rakuten {
-      background: var(--rakuten);
+
+    .aff-btn:hover {
+      opacity: 0.88;
+    }
+
+    .btn-kobo {
+      background: #bf0000;
       color: #fff;
     }
-    .btn-x {
-      background: var(--x-black);
-      color: #fff;
-    }
-    .btn-del {
-      background: #fee2e2;
-      color: #b91c1c;
-      font-size: 0.78rem;
-      padding: 6px;
-    }
-    .empty-msg {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 40px;
-      color: #065f46;
-      background: #ffffff;
-      border: 2px solid var(--border);
-      border-radius: 14px;
+
+    .btn-paper {
+      background: #fff;
+      color: #bf0000;
+      border: 1.5px solid #bf0000;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="header-inner">
-    <h1>アイドル 雑誌・写真集・CD/Blu-ray カタログ</h1>
-    <p class="pr-note">※当サイトはアフィリエイト広告（楽天アフィリエイト等）を利用しています。</p>
+  <header>
+    <h1>アイドル写真集＆デジタル写真集アーカイブ</h1>
+    <p>チーム8（現役・OG）を中心に、今すぐ読めるおすすめ作品を紹介</p>
+  </header>
 
-    <div class="filters" id="groupFilters">
-      <button class="filter-btn active" data-group="すべて">すべて</button>
-      <button class="filter-btn" data-group="乃木坂46">乃木坂46</button>
-      <button class="filter-btn" data-group="櫻坂46">櫻坂46</button>
-      <button class="filter-btn" data-group="日向坂46">日向坂46</button>
-      <button class="filter-btn" data-group="AKB48">AKB48</button>
-    </div>
-
-    <div class="filters" id="categoryFilters">
-      <button class="filter-btn active" data-category="すべて">すべて</button>
-      <button class="filter-btn" data-category="雑誌">雑誌</button>
-      <button class="filter-btn" data-category="写真集">写真集</button>
-      <button class="filter-btn" data-category="CD・Blu-ray">CD・Blu-ray</button>
+  <!-- カテゴリータブ -->
+  <div class="tab-wrapper">
+    <div class="tab-container" id="tabContainer">
+      <button class="tab-btn active" data-category="all">すべて表示</button>
+      <button class="tab-btn" data-category="team8">チーム8（現役・卒業生）</button>
+      <button class="tab-btn" data-category="akb">AKB48グループ</button>
+      <button class="tab-btn" data-category="sakamichi">坂道シリーズ</button>
+      <button class="tab-btn" data-category="digital">デジタル写真集特集</button>
     </div>
   </div>
-</header>
 
-<div class="container">
-  <!-- 管理パネル（URL末尾に ?admin=1 をつけると表示） -->
-  <section class="admin-panel" id="adminPanel">
-    <h2>🛠️ 商品登録・JSON管理パネル</h2>
-
-    <!-- 楽天ブックスAPI 自動検索パネル -->
-    <div class="api-box">
-      <h3>🔍 楽天ブックスAPI 自動検索（ワンクリック追加）</h3>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>楽天アプリID（自動保存されます）</label>
-          <input type="text" id="rakutenAppId" placeholder="1057491916389578..." />
-        </div>
-        <div class="form-group">
-          <label>検索キーワード（例: 乃木坂46 君ロス）</label>
-          <input type="text" id="apiKeyword" placeholder="乃木坂46 君ロス" onkeydown="if(event.key==='Enter') searchRakutenBooks()" />
-        </div>
-        <div class="form-group">
-          <label>登録先グループ</label>
-          <select id="apiGroup">
-            <option value="乃木坂46">乃木坂46</option>
-            <option value="櫻坂46">櫻坂46</option>
-            <option value="日向坂46">日向坂46</option>
-            <option value="AKB48">AKB48</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>登録先ジャンル</label>
-          <select id="apiCategory">
-            <option value="CD・Blu-ray">CD・Blu-ray</option>
-            <option value="雑誌">雑誌</option>
-            <option value="写真集">写真集</option>
-          </select>
-        </div>
-      </div>
-      <button class="btn btn-api" onclick="searchRakutenBooks()">🔍 楽天ブックスで検索する</button>
-      <span id="apiStatus" style="font-size:0.82rem; margin-left:10px; color:#065f46; font-weight:700;"></span>
-      <div class="api-results" id="apiResults"></div>
+  <main>
+    <div class="status-bar">
+      <span id="countDisplay">表示中：3件</span>
+      <span class="pr-notice">※本ページはアフィリエイト広告を含みます</span>
     </div>
 
-    <!-- 手動登録フォーム -->
-    <details>
-      <summary style="cursor:pointer; font-weight:700; color:#065f46; margin-bottom:12px;">✍️ 手動で1件ずつ入力・微調整する場合はこちらを開く</summary>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>グループ</label>
-          <select id="inGroup">
-            <option value="乃木坂46">乃木坂46</option>
-            <option value="櫻坂46">櫻坂46</option>
-            <option value="日向坂46">日向坂46</option>
-            <option value="AKB48">AKB48</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>ジャンル</label>
-          <select id="inCategory">
-            <option value="雑誌">雑誌</option>
-            <option value="写真集">写真集</option>
-            <option value="CD・Blu-ray">CD・Blu-ray</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>発売日（例: 2026-12-02）</label>
-          <input type="date" id="inDate" />
-        </div>
-        <div class="form-group">
-          <label>価格（税込・数字のみ 例: 1999）</label>
-          <input type="number" id="inPrice" placeholder="1999" />
-        </div>
-        <div class="form-group full">
-          <label>商品名</label>
-          <input type="text" id="inTitle" placeholder="【楽天ブックス限定先着特典】君ロス..." />
-        </div>
-        <div class="form-group full">
-          <label>表紙ジャケット画像URL</label>
-          <input type="text" id="inImage" placeholder="https://..." />
-        </div>
-        <div class="form-group full">
-          <label>楽天ブックスアフィリエイトURL</label>
-          <input type="text" id="inUrl" placeholder="https://hb.afl.rakuten.co.jp/..." />
-        </div>
-        <div class="form-group full">
-          <label>事実メモ（特典・仕様など）</label>
-          <textarea id="inMemo" placeholder="・形態：初回仕様限定盤（Type-A）"></textarea>
-        </div>
-      </div>
-      <button class="btn btn-save" onclick="saveItem()">＋ 手動入力データをカタログに追加する</button>
-    </details>
+    <div class="card-grid" id="cardGrid">
 
-    <div class="admin-actions">
-      <button class="btn btn-export" onclick="exportJson()">📋 リストを更新する（JSON書き出し）</button>
-      <button class="btn btn-reset" onclick="resetStorage()">⚠️ ブラウザ一時データをリセット</button>
+      <!-- ▼ 作品カード1（大西桃香さん：チーム8 ＆ デジタル写真集の両方に該当） -->
+      <article class="book-card" data-tags="team8 digital">
+        <div class="cover-area">
+          <!-- 楽天アフィリエイト等の画像タグがある場合はここに貼る -->
+          <div class="badge-group">
+            <span class="badge team8">チーム8 OG</span>
+            <span class="badge digital">デジタル写真集</span>
+          </div>
+          <div class="member-name">大西 桃香</div>
+          <div class="book-title">デジタル写真集『（作品タイトルを入力）』</div>
+        </div>
+        <div class="card-body">
+          <div class="spec-box">
+            発売日：2026年〇月 ／ 出版社：〇〇社 ／ 電子書籍版
+          </div>
+          <div class="review-text">
+            <span class="review-label">★ 推しポイント・見どころ</span><br>
+            チーム8奈良県代表時代からさらに洗練された大人っぽい表情と、自然体な笑顔のギャップが最高の一冊。スマホやタブレットですぐに高画質で楽しめます。
+          </div>
+          <div class="btn-group">
+            <!-- ここにアフィリエイトリンクのURLを入れる -->
+            <a href="#ここに楽天KoboやDMMのアフィリエイトURL" target="_blank" rel="nofollow sponsored noopener" class="aff-btn btn-kobo">
+              電子書籍（楽天Kobo）で今すぐ読む
+            </a>
+            <a href="#ここに紙の写真集のアフィリエイトURL" target="_blank" rel="nofollow sponsored noopener" class="aff-btn btn-paper">
+              楽天市場・楽天ブックスで探す
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- ▼ 作品カード2（追加用サンプル：チーム8メンバー） -->
+      <article class="book-card" data-tags="team8 digital">
+        <div class="cover-area">
+          <div class="badge-group">
+            <span class="badge team8">チーム8</span>
+            <span class="badge digital">デジタル写真集</span>
+          </div>
+          <div class="member-name">下尾 みう</div>
+          <div class="book-title">デジタル写真集『（作品タイトルを入力）』</div>
+        </div>
+        <div class="card-body">
+          <div class="spec-box">
+            発売日：2026年〇月 ／ 出版社：〇〇社 ／ 電子書籍版
+          </div>
+          <div class="review-text">
+            <span class="review-label">★ 推しポイント・見どころ</span><br>
+            圧倒的なビジュアルと透明感が詰まったデジタル限定カット集。グラビア映えするスタイルと、ふとした瞬間の視線に引き込まれます。
+          </div>
+          <div class="btn-group">
+            <a href="#ここにアフィリエイトURL" target="_blank" rel="nofollow sponsored noopener" class="aff-btn btn-kobo">
+              電子書籍（楽天Kobo）で今すぐ読む
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- ▼ 作品カード3（追加用サンプル：坂道シリーズ） -->
+      <article class="book-card" data-tags="sakamichi">
+        <div class="cover-area">
+          <div class="badge-group">
+            <span class="badge">乃木坂46</span>
+          </div>
+          <div class="member-name">メンバー名（サンプル）</div>
+          <div class="book-title">写真集『（作品タイトルを入力）』</div>
+        </div>
+        <div class="card-body">
+          <div class="spec-box">
+            発売日：2026年〇月 ／ 出版社：〇〇社 ／ 単行本・電子版
+          </div>
+          <div class="review-text">
+            <span class="review-label">★ 推しポイント・見どころ</span><br>
+            ここにレビューや感想を3〜4行書くだけで、検索エンジンにもしっかり評価されるオリジナル紹介ページになります。
+          </div>
+          <div class="btn-group">
+            <a href="#ここにアフィリエイトURL" target="_blank" rel="nofollow sponsored noopener" class="aff-btn btn-kobo">
+              電子書籍でチェックする
+            </a>
+            <a href="#ここにアフィリエイトURL" target="_blank" rel="nofollow sponsored noopener" class="aff-btn btn-paper">
+              楽天ブックスで紙版を見る
+            </a>
+          </div>
+        </div>
+      </article>
+
     </div>
+  </main>
 
-    <div class="json-output-area" id="jsonOutputArea">
-      <p style="font-size:0.82rem; font-weight:700; margin:10px 0 4px;">
-        ▼ 以下のJSONを全選択コピーして、GitHubの <code>items.json</code> に上書きしてください（最初から <code>[</code> と <code>]</code> で囲まれています）：
-      </p>
-      <textarea id="jsonText" readonly onclick="this.select()"></textarea>
-    </div>
-  </section>
+  <script>
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const cards = document.querySelectorAll('.book-card');
+    const countDisplay = document.getElementById('countDisplay');
 
-  <main class="catalog-grid" id="catalogGrid"></main>
-</div>
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // アクティブなタブの切り替え
+        tabButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-<script>
-  const STORAGE_KEY = "idol_catalog_items_v2";
-  const APP_ID_KEY = "rakuten_app_id_saved";
-  const AFFILIATE_ID = "5986eeb3.3ae4a14f.5986eeb4.1808f269";
+        const selectedCategory = btn.getAttribute('data-category');
+        let visibleCount = 0;
 
-  let catalogItems = [];
-  let apiFetchedItems = [];
-  let currentGroup = "すべて";
-  let currentCategory = "すべて";
+        cards.forEach(card => {
+          const tags = card.getAttribute('data-tags').split(' ');
+          if (selectedCategory === 'all' || tags.includes(selectedCategory)) {
+            card.classList.remove('hidden');
+            visibleCount++;
+          } else {
+            card.classList.add('hidden');
+          }
+        });
 
-  const isAdmin = new URLSearchParams(window.location.search).get("admin") === "1";
-  if (isAdmin) {
-    document.getElementById("adminPanel").classList.add("visible");
-    const savedAppId = localStorage.getItem(APP_ID_KEY);
-    if (savedAppId) document.getElementById("rakutenAppId").value = savedAppId;
-  }
-
-  async function initCatalog() {
-    let fileItems = [];
-    try {
-      const res = await fetch("./items.json?t=" + Date.now());
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          fileItems = data;
-        } else if (data && typeof data === "object") {
-          fileItems = [data];
-        }
-      }
-    } catch (e) {
-      console.warn("items.json読み込みスキップ:", e);
-    }
-
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        catalogItems = Array.isArray(parsed) ? parsed : fileItems;
-      } catch {
-        catalogItems = fileItems;
-      }
-    } else {
-      catalogItems = fileItems;
-    }
-
-    renderCatalog();
-  }
-
-  // 楽天ブックスAPI検索
-  async function searchRakutenBooks() {
-    const appId = document.getElementById("rakutenAppId").value.trim();
-    const keyword = document.getElementById("apiKeyword").value.trim();
-    const statusEl = document.getElementById("apiStatus");
-    const resultsEl = document.getElementById("apiResults");
-
-    if (!appId) {
-      alert("楽天アプリIDを入力してください。");
-      return;
-    }
-    if (!keyword) {
-      alert("検索キーワードを入力してください。");
-      return;
-    }
-
-    localStorage.setItem(APP_ID_KEY, appId);
-    statusEl.textContent = "検索中...";
-    resultsEl.innerHTML = "";
-
-    try {
-      const apiUrl = `https://app.rakuten.co.jp/services/api/BooksTotal/Search/20170404?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${encodeURIComponent(appId)}&affiliateId=${encodeURIComponent(AFFILIATE_ID)}&hits=20`;
-      const res = await fetch(apiUrl);
-      const data = await res.json();
-
-      if (data.error) {
-        statusEl.textContent = `エラー: ${data.error_description || data.error}`;
-        return;
-      }
-
-      apiFetchedItems = (data.Items || []).map(wrapper => wrapper.Item);
-      statusEl.textContent = `${apiFetchedItems.length}件ヒットしました！`;
-
-      if (apiFetchedItems.length === 0) {
-        resultsEl.innerHTML = `<p style="color:#4b5563;">一致する商品が見つかりませんでした。</p>`;
-        return;
-      }
-
-      resultsEl.innerHTML = apiFetchedItems.map((item, idx) => {
-        const img = (item.largeImageUrl || item.mediumImageUrl || "").replace("?_ex=200x200", "?_ex=400x400");
-        return `
-          <div class="api-card">
-            <img src="${img}" alt="" />
-            <div class="api-card-title">${escapeHtml(item.title)}</div>
-            <div style="color:#059669; font-weight:800;">¥${Number(item.itemPrice).toLocaleString("ja-JP")} / ${escapeHtml(item.salesDate || "")}</div>
-            <button class="btn btn-save" style="padding:6px; font-size:0.8rem; margin-top:auto;" onclick="addFromApi(${idx})">＋ カタログに追加</button>
-          </div>
-        `;
-      }).join("");
-    } catch (err) {
-      statusEl.textContent = "通信エラーが発生しました。時間を置いて再試行してください。";
-      console.error(err);
-    }
-  }
-
-  // API検索結果からワンクリック追加
-  function addFromApi(idx) {
-    const item = apiFetchedItems[idx];
-    if (!item) return;
-
-    const group = document.getElementById("apiGroup").value;
-    const category = document.getElementById("apiCategory").value;
-    const img = (item.largeImageUrl || item.mediumImageUrl || "").replace("?_ex=200x200", "?_ex=400x400");
-    const affUrl = item.affiliateUrl || item.itemUrl;
-    const dateFormatted = normalizeSalesDate(item.salesDate);
-    const memoText = item.itemCaption ? item.itemCaption.slice(0, 180) : "";
-
-    const newItem = {
-      group,
-      category,
-      title: item.title,
-      date: dateFormatted,
-      price: Number(item.itemPrice) || 0,
-      image: img,
-      url: affUrl,
-      memo: memoText
-    };
-
-    catalogItems.unshift(newItem);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogItems));
-    renderCatalog();
-    exportJson();
-  }
-
-  function normalizeSalesDate(salesDate) {
-    if (!salesDate) return "";
-    const m = salesDate.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
-    if (m) {
-      return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
-    }
-    return salesDate;
-  }
-
-  function formatPrice(rawPrice) {
-    const num = Number(String(rawPrice).replace(/[^0-9]/g, ""));
-    return isNaN(num) || num === 0 ? "価格未定" : "¥" + num.toLocaleString("ja-JP");
-  }
-
-  function normalizeCategory(cat) {
-    if (!cat) return "CD・Blu-ray";
-    if (cat === "CD" || cat === "Blu-ray" || cat === "CD/Blu-ray") return "CD・Blu-ray";
-    return cat;
-  }
-
-  function renderCatalog() {
-    const grid = document.getElementById("catalogGrid");
-    if (!Array.isArray(catalogItems)) catalogItems = [];
-
-    const filtered = catalogItems.filter(item => {
-      const matchGroup = currentGroup === "すべて" || item.group === currentGroup;
-      const matchCat = currentCategory === "すべて" || normalizeCategory(item.category) === currentCategory;
-      return matchGroup && matchCat;
+        countDisplay.textContent = `表示中：${visibleCount}件`;
+      });
     });
-
-    if (filtered.length === 0) {
-      grid.innerHTML = `<div class="empty-msg">該当する商品がありません。</div>`;
-      return;
-    }
-
-    const sitePublicUrl = window.location.origin + window.location.pathname;
-
-    grid.innerHTML = filtered.map((item) => {
-      const realIndex = catalogItems.indexOf(item);
-      const catLabel = normalizeCategory(item.category);
-      const dateLabel = item.date ? item.date.replace(/-/g, "/") : "未定";
-      const shareText = encodeURIComponent(`${item.group}『${item.title}』\n発売日：${dateLabel}\n#${item.group}\n`);
-      const shareUrl = encodeURIComponent(sitePublicUrl);
-
-      return `
-        <article class="card">
-          <div class="card-img-wrap">
-            <img src="${item.image || ''}" alt="${escapeHtml(item.title || '')}" loading="lazy" />
-          </div>
-          <div class="card-body">
-            <div class="badges">
-              <span class="badge badge-cat">${catLabel}</span>
-              <span class="badge badge-group">${item.group || ''}</span>
-            </div>
-            <h2 class="card-title">${escapeHtml(item.title || '')}</h2>
-            ${item.memo ? `<div class="memo-box">${escapeHtml(item.memo)}</div>` : ""}
-            <div class="card-meta">
-              <div class="price">${formatPrice(item.price)} <small>(税込)</small></div>
-              <div class="release-date">発売日：${dateLabel}</div>
-            </div>
-            <div class="card-actions">
-              <a class="action-btn btn-rakuten" href="${item.url || '#'}" target="_blank" rel="nofollow sponsored noopener">📕 楽天ブックスで詳細・予約</a>
-              <a class="action-btn btn-x" href="https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}" target="_blank" rel="noopener">𝕏 この情報をポストする</a>
-              ${isAdmin ? `<button class="action-btn btn-del" onclick="deleteItem(${realIndex})">🗑️ この商品を削除</button>` : ""}
-            </div>
-          </div>
-        </article>
-      `;
-    }).join("");
-  }
-
-  function escapeHtml(str) {
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
-
-  function saveItem() {
-    const group = document.getElementById("inGroup").value;
-    const category = document.getElementById("inCategory").value;
-    const date = document.getElementById("inDate").value;
-    const price = Number(String(document.getElementById("inPrice").value).replace(/[^0-9]/g, ""));
-    const title = document.getElementById("inTitle").value.trim();
-    const image = document.getElementById("inImage").value.trim();
-    const url = document.getElementById("inUrl").value.trim();
-    const memo = document.getElementById("inMemo").value.trim();
-
-    if (!title || !url) {
-      alert("「商品名」と「楽天ブックスアフィリエイトURL」は必須です。");
-      return;
-    }
-
-    const newItem = { group, category, title, date, price, image, url, memo };
-    catalogItems.unshift(newItem);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogItems));
-
-    document.getElementById("inTitle").value = "";
-    document.getElementById("inPrice").value = "";
-    document.getElementById("inImage").value = "";
-    document.getElementById("inUrl").value = "";
-    document.getElementById("inMemo").value = "";
-
-    renderCatalog();
-    exportJson();
-    alert("カタログに追加しました！下のJSONをコピーして items.json に貼り付けてください。");
-  }
-
-  function deleteItem(index) {
-    if (!confirm("この商品をリストから削除しますか？")) return;
-    catalogItems.splice(index, 1);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogItems));
-    renderCatalog();
-    exportJson();
-  }
-
-  function exportJson() {
-    const area = document.getElementById("jsonOutputArea");
-    const textarea = document.getElementById("jsonText");
-    area.style.display = "block";
-    textarea.value = JSON.stringify(catalogItems, null, 2);
-  }
-
-  function resetStorage() {
-    if (!confirm("ブラウザの一時保存データを消去し、最新の items.json を再読み込みしますか？")) return;
-    localStorage.removeItem(STORAGE_KEY);
-    location.reload();
-  }
-
-  document.querySelectorAll("#groupFilters .filter-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("#groupFilters .filter-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      currentGroup = btn.dataset.group;
-      renderCatalog();
-    });
-  });
-
-  document.querySelectorAll("#categoryFilters .filter-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("#categoryFilters .filter-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      currentCategory = btn.dataset.category;
-      renderCatalog();
-    });
-  });
-
-  initCatalog();
-</script>
+  </script>
 </body>
 </html>
