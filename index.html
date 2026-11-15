@@ -31,9 +31,6 @@
       background: var(--header-bg);
       border-bottom: 2px solid #6ee7b7;
       padding: 18px 20px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
       box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
     }
     .header-inner { max-width: 1100px; margin: 0 auto; }
@@ -260,6 +257,34 @@
       border: 2px solid var(--border);
       border-radius: 14px;
     }
+    /* 右下のトップへ戻るボタン */
+    .scroll-top-btn {
+      position: fixed;
+      right: 16px;
+      bottom: 18px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary-dark);
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.15s;
+      z-index: 90;
+    }
+    .scroll-top-btn.visible {
+      opacity: 0.92;
+      pointer-events: auto;
+    }
+    .scroll-top-btn:hover {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 <body>
@@ -409,6 +434,8 @@
 
   <main class="catalog-grid" id="catalogGrid"></main>
 </div>
+
+<button type="button" class="scroll-top-btn" id="scrollTopBtn" aria-label="一番上へ戻る" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">▲</button>
 
 <script>
   const ADMIN_PASS = "kuroshiba99";
@@ -754,6 +781,16 @@
       currentCategory = btn.dataset.category;
       renderCatalog();
     });
+  });
+
+  // スクロール時に「▲」ボタンを表示/非表示
+  window.addEventListener("scroll", () => {
+    const btn = document.getElementById("scrollTopBtn");
+    if (window.scrollY > 250) {
+      btn.classList.add("visible");
+    } else {
+      btn.classList.remove("visible");
+    }
   });
 
   initCatalog();
