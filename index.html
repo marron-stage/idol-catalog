@@ -36,26 +36,10 @@
       z-index: 100;
       box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
     }
-    .header-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    h1 {
-      margin: 0 0 4px;
-      font-size: 1.3rem;
-      color: #064e3b;
-    }
-    .pr-note {
-      font-size: 0.75rem;
-      color: #065f46;
-      margin: 0 0 12px;
-    }
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
+    .header-inner { max-width: 1100px; margin: 0 auto; }
+    h1 { margin: 0 0 4px; font-size: 1.3rem; color: #064e3b; }
+    .pr-note { font-size: 0.75rem; color: #065f46; margin: 0 0 12px; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
     .filter-btn {
       border: 1px solid #6ee7b7;
       background: rgba(255, 255, 255, 0.85);
@@ -67,21 +51,29 @@
       font-weight: 700;
       transition: all 0.15s;
     }
-    .filter-btn:hover {
-      background: #ffffff;
-    }
+    .filter-btn:hover { background: #ffffff; }
     .filter-btn.active {
       background: var(--primary-dark);
       color: #fff;
       border-color: var(--primary-dark);
       box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
     }
-    .container {
-      max-width: 1100px;
-      margin: 22px auto;
-      padding: 0 16px 60px;
+    .container { max-width: 1100px; margin: 22px auto; padding: 0 16px 60px; }
+    .auth-box {
+      display: none;
+      max-width: 420px;
+      margin: 0 auto 24px;
+      background: #ffffff;
+      border: 2px solid var(--primary);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.12);
     }
-    /* 管理パネル */
+    .auth-box.visible { display: block; }
+    .auth-box h2 { margin: 0 0 8px; font-size: 1.05rem; color: #065f46; }
+    .auth-row { display: flex; gap: 8px; margin-top: 12px; }
+    .auth-row input { flex: 1; }
     .admin-panel {
       display: none;
       background: #ffffff;
@@ -92,11 +84,7 @@
       box-shadow: 0 4px 14px rgba(16, 185, 129, 0.12);
     }
     .admin-panel.visible { display: block; }
-    .admin-panel h2 {
-      margin: 0 0 12px;
-      font-size: 1.1rem;
-      color: #065f46;
-    }
+    .admin-panel h2 { margin: 0 0 12px; font-size: 1.1rem; color: #065f46; }
     .edit-banner {
       display: none;
       background: #fef3c7;
@@ -138,11 +126,7 @@
       gap: 6px;
       font-size: 0.82rem;
     }
-    .api-card img {
-      height: 120px;
-      object-fit: contain;
-      margin: 0 auto;
-    }
+    .api-card img { height: 120px; object-fit: contain; margin: 0 auto; }
     .api-card-title {
       font-weight: 700;
       line-height: 1.35;
@@ -157,19 +141,9 @@
       gap: 12px;
       margin-bottom: 12px;
     }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .form-group.full {
-      grid-column: 1 / -1;
-    }
-    label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #065f46;
-    }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 0.8rem; font-weight: 700; color: #065f46; }
     input, select, textarea {
       padding: 9px 10px;
       border: 1px solid #a7f3d0;
@@ -183,16 +157,8 @@
       border-color: var(--primary);
       background: #ffffff;
     }
-    textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-    .admin-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
-    }
+    textarea { min-height: 80px; resize: vertical; }
+    .admin-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
     .btn {
       padding: 10px 16px;
       border: none;
@@ -207,10 +173,7 @@
     .btn-api { background: #0284c7; color: #fff; }
     .btn-export { background: #2563eb; color: #fff; }
     .btn-reset { background: #ef4444; color: #fff; }
-    .json-output-area {
-      margin-top: 14px;
-      display: none;
-    }
+    .json-output-area { margin-top: 14px; display: none; }
     .json-output-area textarea {
       width: 100%;
       height: 180px;
@@ -218,7 +181,6 @@
       font-size: 0.8rem;
       background: #f0fdf4;
     }
-    /* カタロググリッド */
     .catalog-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -234,9 +196,7 @@
       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
       transition: transform 0.15s;
     }
-    .card:hover {
-      transform: translateY(-2px);
-    }
+    .card:hover { transform: translateY(-2px); }
     .card-img-wrap {
       background: #f7fef9;
       padding: 16px;
@@ -246,40 +206,15 @@
       border-bottom: 1px solid #d1fae5;
       min-height: 160px;
     }
-    .card-img-wrap img {
-      max-width: 100%;
-      max-height: 240px;
-      object-fit: contain;
-      border-radius: 6px;
-    }
-    .card-body {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-    .badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-    .badge {
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 999px;
-    }
+    .card-img-wrap img { max-width: 100%; max-height: 240px; object-fit: contain; border-radius: 6px; }
+    .card-body { padding: 16px; display: flex; flex-direction: column; flex: 1; }
+    .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+    .badge { font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
     .badge-cat { background: #fef3c7; color: #92400e; }
     .badge-cat-digital { background: #ffedd5; color: #c2410c; }
     .badge-group { background: #d1fae5; color: #065f46; }
     .badge-team8 { background: #e0f2fe; color: #0369a1; }
-    .card-title {
-      font-size: 0.96rem;
-      font-weight: 700;
-      margin: 0 0 10px;
-      line-height: 1.45;
-    }
+    .card-title { font-size: 0.96rem; font-weight: 700; margin: 0 0 10px; line-height: 1.45; }
     .memo-box {
       background: #f0fdf4;
       border: 1px solid #bbf7d0;
@@ -297,25 +232,10 @@
       margin-bottom: 12px;
       margin-top: auto;
     }
-    .price {
-      font-size: 1.18rem;
-      font-weight: 800;
-      color: #059669;
-    }
-    .price small {
-      font-size: 0.75rem;
-      font-weight: 400;
-      color: var(--muted);
-    }
-    .release-date {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-    .card-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .price { font-size: 1.18rem; font-weight: 800; color: #059669; }
+    .price small { font-size: 0.75rem; font-weight: 400; color: var(--muted); }
+    .release-date { font-size: 0.8rem; color: var(--muted); }
+    .card-actions { display: flex; flex-direction: column; gap: 8px; }
     .action-btn {
       display: block;
       text-align: center;
@@ -327,27 +247,10 @@
       cursor: pointer;
       border: none;
     }
-    .btn-rakuten {
-      background: var(--rakuten);
-      color: #fff;
-    }
-    .admin-card-btns {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-    .btn-edit {
-      background: #fef3c7;
-      color: #92400e;
-      font-size: 0.78rem;
-      padding: 6px;
-    }
-    .btn-del {
-      background: #fee2e2;
-      color: #b91c1c;
-      font-size: 0.78rem;
-      padding: 6px;
-    }
+    .btn-rakuten { background: var(--rakuten); color: #fff; }
+    .admin-card-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .btn-edit { background: #fef3c7; color: #92400e; font-size: 0.78rem; padding: 6px; }
+    .btn-del { background: #fee2e2; color: #b91c1c; font-size: 0.78rem; padding: 6px; }
     .empty-msg {
       grid-column: 1 / -1;
       text-align: center;
@@ -386,17 +289,25 @@
 </header>
 
 <div class="container">
-  <!-- 管理パネル（URL末尾に ?admin=1 をつけると表示） -->
+  <!-- 管理パネル用パスワードロック -->
+  <section class="auth-box" id="authBox">
+    <h2>🔒 管理パネル ロック解除</h2>
+    <p style="font-size:0.82rem; color:#4b5563; margin:0;">管理者パスワードを入力してください</p>
+    <div class="auth-row">
+      <input type="password" id="adminPassInput" placeholder="パスワード" onkeydown="if(event.key==='Enter') unlockAdmin()" />
+      <button class="btn btn-save" onclick="unlockAdmin()">解除</button>
+    </div>
+  </section>
+
+  <!-- 管理パネル（認証成功後に表示） -->
   <section class="admin-panel" id="adminPanel">
     <h2>🛠️ 商品登録・編集・JSON管理パネル</h2>
 
-    <!-- 編集中バナー -->
     <div class="edit-banner" id="editBanner">
       <span id="editBannerText">✏️ 既存アイテムを編集中です</span>
       <button type="button" class="btn btn-cancel" onclick="cancelEdit()">編集をキャンセル</button>
     </div>
 
-    <!-- 手動登録・編集フォーム -->
     <details id="manualFormDetails" open style="margin-bottom: 18px;">
       <summary style="cursor:pointer; font-weight:700; color:#065f46; margin-bottom:12px;">✍️ 手動で1件ずつ入力・編集する</summary>
       <div class="form-grid">
@@ -447,7 +358,6 @@
       <button class="btn btn-save" id="saveBtn" onclick="saveItem()">＋ 手動入力データをカタログに追加する</button>
     </details>
 
-    <!-- 楽天ブックスAPI 自動検索パネル -->
     <details class="api-box">
       <summary style="cursor:pointer; font-weight:700; color:#065f46;">🔍 楽天ブックスAPI 自動検索（API復旧時用）</summary>
       <div class="form-grid" style="margin-top:12px;">
@@ -491,7 +401,7 @@
 
     <div class="json-output-area" id="jsonOutputArea">
       <p style="font-size:0.82rem; font-weight:700; margin:10px 0 4px;">
-        ▼ 以下のJSONを全選択コピーして、GitHubの <code>items.json</code> に上書きしてください（最初から <code>[</code> と <code>]</code> で囲まれています）：
+        ▼ 以下のJSONを全選択コピーして、GitHubの <code>items.json</code> に上書きしてください：
       </p>
       <textarea id="jsonText" readonly onclick="this.select()"></textarea>
     </div>
@@ -501,6 +411,8 @@
 </div>
 
 <script>
+  const ADMIN_PASS = "kuroshiba99";
+  const AUTH_SESSION_KEY = "idol_catalog_admin_authed";
   const STORAGE_KEY = "idol_catalog_items_v2";
   const APP_ID_KEY = "rakuten_app_id_saved";
   const AFFILIATE_ID = "5986eeb3.3ae4a14f.5986eeb4.1808f269";
@@ -510,13 +422,39 @@
   let currentGroup = "すべて";
   let currentCategory = "すべて";
   let editingIndex = null;
+  let isAdminUnlocked = false;
 
-  const isAdmin = new URLSearchParams(window.location.search).get("admin") === "1";
-  if (isAdmin) {
+  const isAdminParam = new URLSearchParams(window.location.search).get("admin") === "1";
+
+  function checkAdminAccess() {
+    if (!isAdminParam) return;
+    if (sessionStorage.getItem(AUTH_SESSION_KEY) === "true") {
+      activateAdminMode();
+    } else {
+      document.getElementById("authBox").classList.add("visible");
+    }
+  }
+
+  function unlockAdmin() {
+    const val = document.getElementById("adminPassInput").value;
+    if (val === ADMIN_PASS) {
+      sessionStorage.setItem(AUTH_SESSION_KEY, "true");
+      document.getElementById("authBox").classList.remove("visible");
+      activateAdminMode();
+      renderCatalog();
+    } else {
+      alert("パスワードが違います。");
+    }
+  }
+
+  function activateAdminMode() {
+    isAdminUnlocked = true;
     document.getElementById("adminPanel").classList.add("visible");
     const savedAppId = localStorage.getItem(APP_ID_KEY);
     if (savedAppId) document.getElementById("rakutenAppId").value = savedAppId;
   }
+
+  checkAdminAccess();
 
   async function initCatalog() {
     let fileItems = [];
@@ -549,21 +487,14 @@
     renderCatalog();
   }
 
-  // 楽天ブックスAPI検索
   async function searchRakutenBooks() {
     const appId = document.getElementById("rakutenAppId").value.trim();
     const keyword = document.getElementById("apiKeyword").value.trim();
     const statusEl = document.getElementById("apiStatus");
     const resultsEl = document.getElementById("apiResults");
 
-    if (!appId) {
-      alert("楽天アプリIDを入力してください。");
-      return;
-    }
-    if (!keyword) {
-      alert("検索キーワードを入力してください。");
-      return;
-    }
+    if (!appId) { alert("楽天アプリIDを入力してください。"); return; }
+    if (!keyword) { alert("検索キーワードを入力してください。"); return; }
 
     localStorage.setItem(APP_ID_KEY, appId);
     statusEl.textContent = "検索中...";
@@ -604,7 +535,6 @@
     }
   }
 
-  // API検索結果からワンクリック追加
   function addFromApi(idx) {
     const item = apiFetchedItems[idx];
     if (!item) return;
@@ -616,18 +546,15 @@
     const dateFormatted = normalizeSalesDate(item.salesDate);
     const memoText = item.itemCaption ? item.itemCaption.slice(0, 180) : "";
 
-    const newItem = {
-      group,
-      category,
+    catalogItems.unshift({
+      group, category,
       title: item.title,
       date: dateFormatted,
       price: Number(item.itemPrice) || 0,
       image: img,
       url: affUrl,
       memo: memoText
-    };
-
-    catalogItems.unshift(newItem);
+    });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogItems));
     renderCatalog();
     exportJson();
@@ -636,9 +563,7 @@
   function normalizeSalesDate(salesDate) {
     if (!salesDate) return "";
     const m = salesDate.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
-    if (m) {
-      return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
-    }
+    if (m) return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
     return salesDate;
   }
 
@@ -694,7 +619,7 @@
             </div>
             <div class="card-actions">
               <a class="action-btn btn-rakuten" href="${item.url || '#'}" target="_blank" rel="nofollow sponsored noopener">${btnText}</a>
-              ${isAdmin ? `
+              ${isAdminUnlocked ? `
                 <div class="admin-card-btns">
                   <button class="action-btn btn-edit" onclick="editItem(${realIndex})">✏️ 編集する</button>
                   <button class="action-btn btn-del" onclick="deleteItem(${realIndex})">🗑️ 削除</button>
@@ -720,7 +645,6 @@
     if (!item) return;
 
     editingIndex = index;
-
     document.getElementById("manualFormDetails").open = true;
     document.getElementById("inGroup").value = item.group || "乃木坂46";
     document.getElementById("inCategory").value = normalizeCategory(item.category);
