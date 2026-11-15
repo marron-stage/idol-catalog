@@ -95,17 +95,27 @@
       font-size: 1.1rem;
       color: #065f46;
     }
+    .edit-banner {
+      display: none;
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      color: #92400e;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .edit-banner.visible { display: flex; }
     .api-box {
       background: #f0fdf4;
       border: 1px solid #86efac;
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 20px;
-    }
-    .api-box h3 {
-      margin: 0 0 10px;
-      font-size: 0.98rem;
-      color: #065f46;
     }
     .api-results {
       display: grid;
@@ -190,6 +200,8 @@
       cursor: pointer;
     }
     .btn-save { background: var(--primary-dark); color: #fff; }
+    .btn-save.editing { background: #d97706; }
+    .btn-cancel { background: #e5e7eb; color: #374151; padding: 6px 12px; font-size: 0.8rem; }
     .btn-api { background: #0284c7; color: #fff; }
     .btn-export { background: #2563eb; color: #fff; }
     .btn-reset { background: #ef4444; color: #fff; }
@@ -321,6 +333,17 @@
       background: var(--x-black);
       color: #fff;
     }
+    .admin-card-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .btn-edit {
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 0.78rem;
+      padding: 6px;
+    }
     .btn-del {
       background: #fee2e2;
       color: #b91c1c;
@@ -367,11 +390,17 @@
 <div class="container">
   <!-- 管理パネル（URL末尾に ?admin=1 をつけると表示） -->
   <section class="admin-panel" id="adminPanel">
-    <h2>🛠️ 商品登録・JSON管理パネル</h2>
+    <h2>🛠️ 商品登録・編集・JSON管理パネル</h2>
 
-    <!-- 手動登録フォーム（API障害時はこちらをメインに使用） -->
-    <details open style="margin-bottom: 18px;">
-      <summary style="cursor:pointer; font-weight:700; color:#065f46; margin-bottom:12px;">✍️ 手動で1件ずつ入力・登録する</summary>
+    <!-- 編集中バナー -->
+    <div class="edit-banner" id="editBanner">
+      <span id="editBannerText">✏️ 既存アイテムを編集中です</span>
+      <button type="button" class="btn btn-cancel" onclick="cancelEdit()">編集をキャンセル</button>
+    </div>
+
+    <!-- 手動登録・編集フォーム -->
+    <details id="manualFormDetails" open style="margin-bottom: 18px;">
+      <summary style="cursor:pointer; font-weight:700; color:#065f46; margin-bottom:12px;">✍️ 手動で1件ずつ入力・編集する</summary>
       <div class="form-grid">
         <div class="form-group">
           <label>グループ</label>
@@ -413,11 +442,11 @@
           <input type="text" id="inUrl" placeholder="https://hb.afl.rakuten.co.jp/..." />
         </div>
         <div class="form-group full">
-          <label>事実メモ（特典・仕様・見どころなど）</label>
-          <textarea id="inMemo" placeholder="・仕様：デジタル写真集（楽天Kobo）"></textarea>
+          <label>事実メモ（特典・ポストカード・仕様など）</label>
+          <textarea id="inMemo" placeholder="・特典：ポストカード付き"></textarea>
         </div>
       </div>
-      <button class="btn btn-save" onclick="saveItem()">＋ 手動入力データをカタログに追加する</button>
+      <button class="btn btn-save" id="saveBtn" onclick="saveItem()">＋ 手動入力データをカタログに追加する</button>
     </details>
 
     <!-- 楽天ブックスAPI 自動検索パネル -->
@@ -482,6 +511,7 @@
   let apiFetchedItems = [];
   let currentGroup = "すべて";
   let currentCategory = "すべて";
+  let editingIndex = null;
 
   const isAdmin = new URLSearchParams(window.location.search).get("admin") === "1";
   if (isAdmin) {
@@ -672,7 +702,12 @@
             <div class="card-actions">
               <a class="action-btn btn-rakuten" href="${item.url || '#'}" target="_blank" rel="nofollow sponsored noopener">${btnText}</a>
               <a class="action-btn btn-x" href="https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}" target="_blank" rel="noopener">𝕏 この情報をポストする</a>
-              ${isAdmin ? `<button class="action-btn btn-del" onclick="deleteItem(${realIndex})">🗑️ この商品を削除</button>` : ""}
+              ${isAdmin ? `
+                <div class="admin-card-btns">
+                  <button class="action-btn btn-edit" onclick="editItem(${realIndex})">✏️ 編集する</button>
+                  <button class="action-btn btn-del" onclick="deleteItem(${realIndex})">🗑️ 削除</button>
+                </div>
+              ` : ""}
             </div>
           </div>
         </article>
@@ -686,6 +721,49 @@
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
+  }
+
+  function editItem(index) {
+    const item = catalogItems[index];
+    if (!item) return;
+
+    editingIndex = index;
+
+    document.getElementById("manualFormDetails").open = true;
+    document.getElementById("inGroup").value = item.group || "乃木坂46";
+    document.getElementById("inCategory").value = normalizeCategory(item.category);
+    document.getElementById("inDate").value = item.date || "";
+    document.getElementById("inPrice").value = item.price || "";
+    document.getElementById("inTitle").value = item.title || "";
+    document.getElementById("inImage").value = item.image || "";
+    document.getElementById("inUrl").value = item.url || "";
+    document.getElementById("inMemo").value = item.memo || "";
+
+    const banner = document.getElementById("editBanner");
+    document.getElementById("editBannerText").textContent = `✏️ 編集中：${item.title.slice(0, 28)}...`;
+    banner.classList.add("visible");
+
+    const saveBtn = document.getElementById("saveBtn");
+    saveBtn.textContent = "💾 変更を上書き保存する";
+    saveBtn.classList.add("editing");
+
+    document.getElementById("adminPanel").scrollIntoView({ behavior: "smooth" });
+  }
+
+  function cancelEdit() {
+    editingIndex = null;
+    document.getElementById("editBanner").classList.remove("visible");
+
+    const saveBtn = document.getElementById("saveBtn");
+    saveBtn.textContent = "＋ 手動入力データをカタログに追加する";
+    saveBtn.classList.remove("editing");
+
+    document.getElementById("inDate").value = "";
+    document.getElementById("inTitle").value = "";
+    document.getElementById("inPrice").value = "";
+    document.getElementById("inImage").value = "";
+    document.getElementById("inUrl").value = "";
+    document.getElementById("inMemo").value = "";
   }
 
   function saveItem() {
@@ -703,23 +781,28 @@
       return;
     }
 
-    const newItem = { group, category, title, date, price, image, url, memo };
-    catalogItems.unshift(newItem);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogItems));
+    const itemData = { group, category, title, date, price, image, url, memo };
 
-    document.getElementById("inTitle").value = "";
-    document.getElementById("inPrice").value = "";
-    document.getElementById("inImage").value = "";
-    document.getElementById("inUrl").value = "";
-    document.getElementById("inMemo").value = "";
-
-    renderCatalog();
-    exportJson();
-    alert("カタログに追加しました！下のJSONをコピーして items.json に貼り付けてください。");
+    if (editingIndex !== null && catalogItems[editingIndex]) {
+      catalogItems[editingIndex] = itemData;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogItems));
+      cancelEdit();
+      renderCatalog();
+      exportJson();
+      alert("変更を上書き保存しました！下のJSONをコピーして items.json に貼り付けてください。");
+    } else {
+      catalogItems.unshift(itemData);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogItems));
+      cancelEdit();
+      renderCatalog();
+      exportJson();
+      alert("カタログに追加しました！下のJSONをコピーして items.json に貼り付けてください。");
+    }
   }
 
   function deleteItem(index) {
     if (!confirm("この商品をリストから削除しますか？")) return;
+    if (editingIndex === index) cancelEdit();
     catalogItems.splice(index, 1);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogItems));
     renderCatalog();
