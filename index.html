@@ -17,6 +17,7 @@
       --primary: #16a34a;
       --primary-dark: #15803d;
       --rakuten: #bf0000;
+      --reserve: #d97706;
     }
     * { box-sizing: border-box; }
     body {
@@ -232,6 +233,7 @@
       border: none;
     }
     .btn-rakuten { background: var(--rakuten); color: #fff; }
+    .btn-reserve { background: var(--reserve); color: #fff; }
     .admin-card-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     .btn-edit { background: #fef3c7; color: #92400e; font-size: 0.78rem; padding: 6px; }
     .btn-del { background: #fee2e2; color: #b91c1c; font-size: 0.78rem; padding: 6px; }
@@ -455,9 +457,19 @@
     return isNaN(num) || num === 0 ? "価格未定" : "¥" + num.toLocaleString("ja-JP");
   }
 
+  function getTodayString() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, "0");
+    const d = String(now.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
   function renderCatalog() {
     const grid = document.getElementById("catalogGrid");
     if (!Array.isArray(catalogItems)) catalogItems = [];
+
+    const todayStr = getTodayString();
 
     const filtered = catalogItems.filter(item => {
       const matchGroup = currentGroup === "すべて" || item.group === currentGroup;
@@ -473,6 +485,9 @@
     grid.innerHTML = filtered.map((item) => {
       const realIndex = catalogItems.indexOf(item);
       const dateLabel = item.date ? item.date.replace(/-/g, "/") : "未定";
+      const isFuture = item.date && item.date > todayStr;
+      const btnClass = isFuture ? "btn-reserve" : "btn-rakuten";
+      const btnLabel = isFuture ? "🛒 楽天市場で予約する" : "🛒 楽天市場で購入・詳細";
 
       return `
         <article class="card">
@@ -491,7 +506,7 @@
               <div class="release-date">発売日：${dateLabel}</div>
             </div>
             <div class="card-actions">
-              <a class="action-btn btn-rakuten" href="${item.url || '#'}" target="_blank" rel="nofollow sponsored noopener">🛒 楽天市場で詳細・予約</a>
+              <a class="action-btn ${btnClass}" href="${item.url || '#'}" target="_blank" rel="nofollow sponsored noopener">${btnLabel}</a>
               ${isAdminUnlocked ? `
                 <div class="admin-card-btns">
                   <button class="action-btn btn-edit" onclick="editItem(${realIndex})">✏️ 編集する</button>
