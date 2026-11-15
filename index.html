@@ -91,9 +91,53 @@
     }
     .admin-panel.visible { display: block; }
     .admin-panel h2 {
-      margin: 0 0 14px;
+      margin: 0 0 12px;
       font-size: 1.1rem;
       color: #065f46;
+    }
+    .api-box {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .api-box h3 {
+      margin: 0 0 10px;
+      font-size: 0.98rem;
+      color: #065f46;
+    }
+    .api-results {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+      max-height: 440px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .api-card {
+      background: #ffffff;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.82rem;
+    }
+    .api-card img {
+      height: 120px;
+      object-fit: contain;
+      margin: 0 auto;
+    }
+    .api-card-title {
+      font-weight: 700;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     .form-grid {
       display: grid;
@@ -128,7 +172,7 @@
       background: #ffffff;
     }
     textarea {
-      min-height: 85px;
+      min-height: 80px;
       resize: vertical;
     }
     .admin-actions {
@@ -146,6 +190,7 @@
       cursor: pointer;
     }
     .btn-save { background: var(--primary-dark); color: #fff; }
+    .btn-api { background: #0284c7; color: #fff; }
     .btn-export { background: #2563eb; color: #fff; }
     .btn-reset { background: #ef4444; color: #fff; }
     .json-output-area {
@@ -315,54 +360,95 @@
 </header>
 
 <div class="container">
+  <!-- 管理パネル（URL末尾に ?admin=1 をつけると表示） -->
   <section class="admin-panel" id="adminPanel">
     <h2>🛠️ 商品登録・JSON管理パネル</h2>
-    <div class="form-grid">
-      <div class="form-group">
-        <label>グループ</label>
-        <select id="inGroup">
-          <option value="乃木坂46">乃木坂46</option>
-          <option value="櫻坂46">櫻坂46</option>
-          <option value="日向坂46">日向坂46</option>
-          <option value="AKB48">AKB48</option>
-        </select>
+
+    <!-- 楽天ブックスAPI 自動検索パネル -->
+    <div class="api-box">
+      <h3>🔍 楽天ブックスAPI 自動検索（ワンクリック追加）</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>楽天アプリID（自動保存されます）</label>
+          <input type="text" id="rakutenAppId" placeholder="1057491916389578..." />
+        </div>
+        <div class="form-group">
+          <label>検索キーワード（例: 乃木坂46 君ロス）</label>
+          <input type="text" id="apiKeyword" placeholder="乃木坂46 君ロス" onkeydown="if(event.key==='Enter') searchRakutenBooks()" />
+        </div>
+        <div class="form-group">
+          <label>登録先グループ</label>
+          <select id="apiGroup">
+            <option value="乃木坂46">乃木坂46</option>
+            <option value="櫻坂46">櫻坂46</option>
+            <option value="日向坂46">日向坂46</option>
+            <option value="AKB48">AKB48</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>登録先ジャンル</label>
+          <select id="apiCategory">
+            <option value="CD・Blu-ray">CD・Blu-ray</option>
+            <option value="雑誌">雑誌</option>
+            <option value="写真集">写真集</option>
+          </select>
+        </div>
       </div>
-      <div class="form-group">
-        <label>ジャンル</label>
-        <select id="inCategory">
-          <option value="雑誌">雑誌</option>
-          <option value="写真集">写真集</option>
-          <option value="CD・Blu-ray">CD・Blu-ray</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>発売日（例: 2026-12-02）</label>
-        <input type="date" id="inDate" />
-      </div>
-      <div class="form-group">
-        <label>価格（税込・数字のみ 例: 1999）</label>
-        <input type="number" id="inPrice" placeholder="1999" />
-      </div>
-      <div class="form-group full">
-        <label>商品名</label>
-        <input type="text" id="inTitle" placeholder="【楽天ブックス限定先着特典】君ロス (初回仕様限定盤 CD＋Blu-ray Type-A)..." />
-      </div>
-      <div class="form-group full">
-        <label>表紙ジャケット画像URL（https://... から始まるURLのみ）</label>
-        <input type="text" id="inImage" placeholder="https://hbb.afl.rakuten.co.jp/..." />
-      </div>
-      <div class="form-group full">
-        <label>楽天ブックスアフィリエイトURL（https://... から始まるURLのみ）</label>
-        <input type="text" id="inUrl" placeholder="https://a.r10.to/..." />
-      </div>
-      <div class="form-group full">
-        <label>事実メモ（特典・仕様など）</label>
-        <textarea id="inMemo" placeholder="・形態：初回仕様限定盤（Type-A）&#10;・封入特典：生写真ランダム1枚"></textarea>
-      </div>
+      <button class="btn btn-api" onclick="searchRakutenBooks()">🔍 楽天ブックスで検索する</button>
+      <span id="apiStatus" style="font-size:0.82rem; margin-left:10px; color:#065f46; font-weight:700;"></span>
+      <div class="api-results" id="apiResults"></div>
     </div>
 
+    <!-- 手動登録フォーム -->
+    <details>
+      <summary style="cursor:pointer; font-weight:700; color:#065f46; margin-bottom:12px;">✍️ 手動で1件ずつ入力・微調整する場合はこちらを開く</summary>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>グループ</label>
+          <select id="inGroup">
+            <option value="乃木坂46">乃木坂46</option>
+            <option value="櫻坂46">櫻坂46</option>
+            <option value="日向坂46">日向坂46</option>
+            <option value="AKB48">AKB48</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ジャンル</label>
+          <select id="inCategory">
+            <option value="雑誌">雑誌</option>
+            <option value="写真集">写真集</option>
+            <option value="CD・Blu-ray">CD・Blu-ray</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>発売日（例: 2026-12-02）</label>
+          <input type="date" id="inDate" />
+        </div>
+        <div class="form-group">
+          <label>価格（税込・数字のみ 例: 1999）</label>
+          <input type="number" id="inPrice" placeholder="1999" />
+        </div>
+        <div class="form-group full">
+          <label>商品名</label>
+          <input type="text" id="inTitle" placeholder="【楽天ブックス限定先着特典】君ロス..." />
+        </div>
+        <div class="form-group full">
+          <label>表紙ジャケット画像URL</label>
+          <input type="text" id="inImage" placeholder="https://..." />
+        </div>
+        <div class="form-group full">
+          <label>楽天ブックスアフィリエイトURL</label>
+          <input type="text" id="inUrl" placeholder="https://hb.afl.rakuten.co.jp/..." />
+        </div>
+        <div class="form-group full">
+          <label>事実メモ（特典・仕様など）</label>
+          <textarea id="inMemo" placeholder="・形態：初回仕様限定盤（Type-A）"></textarea>
+        </div>
+      </div>
+      <button class="btn btn-save" onclick="saveItem()">＋ 手動入力データをカタログに追加する</button>
+    </details>
+
     <div class="admin-actions">
-      <button class="btn btn-save" onclick="saveItem()">＋ カタログに追加する</button>
       <button class="btn btn-export" onclick="exportJson()">📋 リストを更新する（JSON書き出し）</button>
       <button class="btn btn-reset" onclick="resetStorage()">⚠️ ブラウザ一時データをリセット</button>
     </div>
@@ -380,13 +466,19 @@
 
 <script>
   const STORAGE_KEY = "idol_catalog_items_v2";
+  const APP_ID_KEY = "rakuten_app_id_saved";
+  const AFFILIATE_ID = "5986eeb3.3ae4a14f.5986eeb4.1808f269";
+
   let catalogItems = [];
+  let apiFetchedItems = [];
   let currentGroup = "すべて";
   let currentCategory = "すべて";
 
   const isAdmin = new URLSearchParams(window.location.search).get("admin") === "1";
   if (isAdmin) {
     document.getElementById("adminPanel").classList.add("visible");
+    const savedAppId = localStorage.getItem(APP_ID_KEY);
+    if (savedAppId) document.getElementById("rakutenAppId").value = savedAppId;
   }
 
   async function initCatalog() {
@@ -420,6 +512,99 @@
     renderCatalog();
   }
 
+  // 楽天ブックスAPI検索
+  async function searchRakutenBooks() {
+    const appId = document.getElementById("rakutenAppId").value.trim();
+    const keyword = document.getElementById("apiKeyword").value.trim();
+    const statusEl = document.getElementById("apiStatus");
+    const resultsEl = document.getElementById("apiResults");
+
+    if (!appId) {
+      alert("楽天アプリIDを入力してください。");
+      return;
+    }
+    if (!keyword) {
+      alert("検索キーワードを入力してください。");
+      return;
+    }
+
+    localStorage.setItem(APP_ID_KEY, appId);
+    statusEl.textContent = "検索中...";
+    resultsEl.innerHTML = "";
+
+    try {
+      const apiUrl = `https://app.rakuten.co.jp/services/api/BooksTotal/Search/20170404?format=json&keyword=${encodeURIComponent(keyword)}&applicationId=${encodeURIComponent(appId)}&affiliateId=${encodeURIComponent(AFFILIATE_ID)}&hits=20`;
+      const res = await fetch(apiUrl);
+      const data = await res.json();
+
+      if (data.error) {
+        statusEl.textContent = `エラー: ${data.error_description || data.error}`;
+        return;
+      }
+
+      apiFetchedItems = (data.Items || []).map(wrapper => wrapper.Item);
+      statusEl.textContent = `${apiFetchedItems.length}件ヒットしました！`;
+
+      if (apiFetchedItems.length === 0) {
+        resultsEl.innerHTML = `<p style="color:#4b5563;">一致する商品が見つかりませんでした。</p>`;
+        return;
+      }
+
+      resultsEl.innerHTML = apiFetchedItems.map((item, idx) => {
+        const img = (item.largeImageUrl || item.mediumImageUrl || "").replace("?_ex=200x200", "?_ex=400x400");
+        return `
+          <div class="api-card">
+            <img src="${img}" alt="" />
+            <div class="api-card-title">${escapeHtml(item.title)}</div>
+            <div style="color:#059669; font-weight:800;">¥${Number(item.itemPrice).toLocaleString("ja-JP")} / ${escapeHtml(item.salesDate || "")}</div>
+            <button class="btn btn-save" style="padding:6px; font-size:0.8rem; margin-top:auto;" onclick="addFromApi(${idx})">＋ カタログに追加</button>
+          </div>
+        `;
+      }).join("");
+    } catch (err) {
+      statusEl.textContent = "通信エラーが発生しました。時間を置いて再試行してください。";
+      console.error(err);
+    }
+  }
+
+  // API検索結果からワンクリック追加
+  function addFromApi(idx) {
+    const item = apiFetchedItems[idx];
+    if (!item) return;
+
+    const group = document.getElementById("apiGroup").value;
+    const category = document.getElementById("apiCategory").value;
+    const img = (item.largeImageUrl || item.mediumImageUrl || "").replace("?_ex=200x200", "?_ex=400x400");
+    const affUrl = item.affiliateUrl || item.itemUrl;
+    const dateFormatted = normalizeSalesDate(item.salesDate);
+    const memoText = item.itemCaption ? item.itemCaption.slice(0, 180) : "";
+
+    const newItem = {
+      group,
+      category,
+      title: item.title,
+      date: dateFormatted,
+      price: Number(item.itemPrice) || 0,
+      image: img,
+      url: affUrl,
+      memo: memoText
+    };
+
+    catalogItems.unshift(newItem);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogItems));
+    renderCatalog();
+    exportJson();
+  }
+
+  function normalizeSalesDate(salesDate) {
+    if (!salesDate) return "";
+    const m = salesDate.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+    if (m) {
+      return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
+    }
+    return salesDate;
+  }
+
   function formatPrice(rawPrice) {
     const num = Number(String(rawPrice).replace(/[^0-9]/g, ""));
     return isNaN(num) || num === 0 ? "価格未定" : "¥" + num.toLocaleString("ja-JP");
@@ -446,7 +631,6 @@
       return;
     }
 
-    // サイト自体の公開URL（?admin=1 を除いた綺麗なURL）を取得
     const sitePublicUrl = window.location.origin + window.location.pathname;
 
     grid.innerHTML = filtered.map((item) => {
@@ -459,14 +643,14 @@
       return `
         <article class="card">
           <div class="card-img-wrap">
-            <img src="${item.image || ''}" alt="${item.title || ''}" loading="lazy" />
+            <img src="${item.image || ''}" alt="${escapeHtml(item.title || '')}" loading="lazy" />
           </div>
           <div class="card-body">
             <div class="badges">
               <span class="badge badge-cat">${catLabel}</span>
               <span class="badge badge-group">${item.group || ''}</span>
             </div>
-            <h2 class="card-title">${item.title || ''}</h2>
+            <h2 class="card-title">${escapeHtml(item.title || '')}</h2>
             ${item.memo ? `<div class="memo-box">${escapeHtml(item.memo)}</div>` : ""}
             <div class="card-meta">
               <div class="price">${formatPrice(item.price)} <small>(税込)</small></div>
@@ -487,7 +671,8 @@
     return String(str)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   function saveItem() {
