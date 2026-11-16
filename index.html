@@ -155,6 +155,40 @@
       background: #ffffff;
     }
     textarea { min-height: 80px; resize: vertical; }
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid #86efac;
+      border-radius: 8px;
+      background: #f7fee7;
+    }
+    .checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid #86efac;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #166534;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .checkbox-label:has(input:checked) {
+      background: var(--primary-dark);
+      color: #ffffff;
+      border-color: var(--primary-dark);
+    }
+    .checkbox-label input[type="checkbox"] {
+      margin: 0;
+      accent-color: #16a34a;
+      cursor: pointer;
+    }
     .admin-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
     .btn {
       padding: 10px 16px;
@@ -328,15 +362,15 @@
     <details id="manualFormDetails" open style="margin-bottom: 18px;">
       <summary style="cursor:pointer; font-weight:700; color:#166534; margin-bottom:12px;">✍️ 手動で1件ずつ入力・編集する</summary>
       <div class="form-grid">
-        <div class="form-group">
-          <label>グループ名</label>
-          <select id="inGroup">
-            <option value="乃木坂46">乃木坂46</option>
-            <option value="櫻坂46">櫻坂46</option>
-            <option value="日向坂46">日向坂46</option>
-            <option value="AKB48">AKB48</option>
-            <option value="チーム8（OG）">チーム8（OG）</option>
-          </select>
+        <div class="form-group full">
+          <label>グループ名（複数選択可）</label>
+          <div class="checkbox-group" id="inGroupCheckboxes">
+            <label class="checkbox-label"><input type="checkbox" name="inGroup" value="乃木坂46" checked /> 乃木坂46</label>
+            <label class="checkbox-label"><input type="checkbox" name="inGroup" value="櫻坂46" /> 櫻坂46</label>
+            <label class="checkbox-label"><input type="checkbox" name="inGroup" value="日向坂46" /> 日向坂46</label>
+            <label class="checkbox-label"><input type="checkbox" name="inGroup" value="AKB48" /> AKB48</label>
+            <label class="checkbox-label"><input type="checkbox" name="inGroup" value="チーム8（OG）" /> チーム8（OG）</label>
+          </div>
         </div>
         <div class="form-group">
           <label>カテゴリ</label>
@@ -434,6 +468,17 @@
 
   checkAdminAccess();
 
+  // 単一文字列(group)と配列(groups)の両方を配列に正規化して返すヘルパー
+  function getItemGroups(item) {
+    if (Array.isArray(item.groups) && item.groups.length > 0) {
+      return item.groups;
+    }
+    if (typeof item.group === "string" && item.group.trim() !== "") {
+      return [item.group.trim()];
+    }
+    return ["その他"];
+  }
+
   async function initCatalog() {
     let fileItems = [];
     try {
@@ -481,7 +526,8 @@
     const todayStr = getTodayString();
 
     const filtered = catalogItems.filter(item => {
-      const matchGroup = currentGroup === "すべて" || item.group === currentGroup;
+      const itemGroups = getItemGroups(item);
+      const matchGroup = currentGroup === "すべて" || itemGroups.includes(currentGroup);
       const matchCat = currentCat === "すべて" || item.category === currentCat;
       return matchGroup && matchCat;
     });
@@ -497,6 +543,9 @@
       const isFuture = item.date && item.date > todayStr;
       const btnClass = isFuture ? "btn-reserve" : "btn-rakuten";
       const btnLabel = isFuture ? "🛒 楽天市場で予約する" : "🛒 楽天市場で購入・詳細";
+      const groupBadges = getItemGroups(item)
+        .map(g => `<span class="badge badge-group">${escapeHtml(g)}</span>`)
+        .join("");
 
       return `
         <article class="card">
@@ -505,7 +554,7 @@
           </div>
           <div class="card-body">
             <div class="badges">
-              <span class="badge badge-group">${escapeHtml(item.group || 'その他')}</span>
+              ${groupBadges}
               <span class="badge badge-cat">${escapeHtml(item.category || '雑誌')}</span>
             </div>
             <h2 class="card-title">${escapeHtml(item.title || '')}</h2>
@@ -537,13 +586,24 @@
       .replace(/"/g, "&quot;");
   }
 
+  function setSelectedGroups(groups) {
+    const list = Array.isArray(groups) && groups.length > 0 ? groups : ["乃木坂46"];
+    document.querySelectorAll('input[name="inGroup"]').forEach(cb => {
+      cb.checked = list.includes(cb.value);
+    });
+  }
+
+  function getSelectedGroups() {
+    return Array.from(document.querySelectorAll('input[name="inGroup"]:checked')).map(cb => cb.value);
+  }
+
   function editItem(index) {
     const item = catalogItems[index];
     if (!item) return;
 
     editingIndex = index;
     document.getElementById("manualFormDetails").open = true;
-    document.getElementById("inGroup").value = item.group || "乃木坂46";
+    setSelectedGroups(getItemGroups(item));
     document.getElementById("inCat").value = item.category || "雑誌";
     document.getElementById("inDate").value = item.date || "";
     document.getElementById("inPrice").value = item.price || "";
@@ -571,6 +631,7 @@
     saveBtn.textContent = "＋ 手動入力データをカタログに追加する";
     saveBtn.classList.remove("editing");
 
+    setSelectedGroups(["乃木坂46"]);
     document.getElementById("inDate").value = "";
     document.getElementById("inTitle").value = "";
     document.getElementById("inPrice").value = "";
@@ -580,7 +641,12 @@
   }
 
   function saveItem() {
-    const group = document.getElementById("inGroup").value;
+    const groups = getSelectedGroups();
+    if (groups.length === 0) {
+      alert("グループ名を1つ以上選択してください。");
+      return;
+    }
+
     const category = document.getElementById("inCat").value;
     const date = document.getElementById("inDate").value;
     const price = Number(String(document.getElementById("inPrice").value).replace(/[^0-9]/g, ""));
@@ -594,7 +660,7 @@
       return;
     }
 
-    const itemData = { group, category, title, date, price, image, url, memo };
+    const itemData = { groups, category, title, date, price, image, url, memo };
 
     if (editingIndex !== null && catalogItems[editingIndex]) {
       catalogItems[editingIndex] = itemData;
