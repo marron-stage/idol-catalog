@@ -4,10 +4,8 @@ import re
 from PIL import Image, ImageDraw, ImageFont
 
 raw_data_str = os.environ.get("RAW_DATA", "{}").strip()
-cast = os.environ.get("CAST", "").strip()
-item_format = os.environ.get("FORMAT", "写真集").strip()
-label = os.environ.get("LABEL", "その他").strip()
-genre = os.environ.get("GENRE", "グラビア").strip()
+groups_input = os.environ.get("GROUPS", "").strip()
+category = os.environ.get("CATEGORY", "雑誌").strip()
 af_html = os.environ.get("AF_HTML", "").strip()
 custom_memo = os.environ.get("CUSTOM_MEMO", "").strip()
 
@@ -35,20 +33,28 @@ if custom_memo:
 else:
     memo = f"・{title}"
 
-# 4. 既存items.jsonのキー順に合わせたデータ作成
-new_item = {
+# 4. グループ判定（1つなら "group"、複数なら "groups"）
+group_list = [g.strip() for g in re.split(r'[,、/]', groups_input) if g.strip()]
+
+new_item = {}
+if len(group_list) == 1:
+    new_item["group"] = group_list[0]
+elif len(group_list) > 1:
+    new_item["groups"] = group_list
+else:
+    new_item["group"] = "その他"
+
+new_item.update({
+    "category": category,
     "title": title,
-    "cast": cast if cast else title.split()[0],
-    "format": item_format,
-    "label": label,
-    "genre": genre,
     "date": date,
     "price": price,
     "image": image_url,
     "url": item_url,
     "memo": memo
-}
+})
 
+# 5. items.json へ追記
 json_path = "items.json"
 if os.path.exists(json_path):
     with open(json_path, "r", encoding="utf-8") as f:
@@ -61,40 +67,36 @@ items.insert(0, new_item)
 with open(json_path, "w", encoding="utf-8") as f:
     json.dump(items, f, ensure_ascii=False, indent=2)
 
-# 5. X告知用PNG画像の自動生成（1200x675 16:9）
+# 6. X告知用PNG画像の自動生成（1200x675 16:9）
 os.makedirs("x_posts", exist_ok=True)
 W, H = 1200, 675
 
-# 形式ごとのカラー設定（写真集＝鮮やかなピンク / 雑誌＝オレンジ / デジタル＝水色）
 COLOR_MAP = {
-    "写真集": ((219, 39, 119), (255, 232, 243), (157, 23, 77)),
-    "グラビア本・雑誌": ((234, 88, 12), (255, 240, 224), (154, 52, 18)),
-    "デジタル写真集": ((2, 132, 199), (230, 245, 255), (7, 89, 133)),
+    "乃木坂46": ((126, 48, 168), (248, 240, 255), (90, 25, 130)),
+    "櫻坂46": ((241, 157, 181), (255, 248, 250), (200, 80, 120)),
+    "日向坂46": ((91, 188, 228), (242, 251, 255), (30, 130, 180)),
+    "AKB48": ((233, 82, 149), (255, 242, 248), (190, 40, 110)),
 }
-accent, bg_color, dark_text = COLOR_MAP.get(item_format, ((219, 39, 119), (255, 232, 243), (157, 23, 77)))
+main_group = group_list[0] if group_list else "アイドル"
+accent, bg_color, dark_text = COLOR_MAP.get(main_group, ((70, 90, 130), (245, 247, 252), (40, 55, 90)))
 
 img = Image.new("RGB", (W, H), bg_color)
 draw = ImageDraw.Draw(img)
 
-# 外枠と上部ヘッダー帯
 draw.rectangle([20, 20, W - 20, H - 20], outline=accent, width=8)
 draw.rectangle([20, 20, W - 20, 118], fill=accent)
 
 font_path = "/usr/share/fonts/opentype/ipafont-gothic/ipagp.ttf"
 
-font_badge = ImageFont.truetype(font_path, 36)
-font_cast = ImageFont.truetype(font_path, 44)
-font_title = ImageFont.truetype(font_path, 34)
+font_badge = ImageFont.truetype(font_path, 38)
+font_title = ImageFont.truetype(font_path, 42)
 font_memo = ImageFont.truetype(font_path, 25)
 font_footer = ImageFont.truetype(font_path, 28)
 
-draw.text((55, 50), f"【{item_format} / {label} / {genre}】", fill=(255, 255, 255), font=font_badge)
+group_label = " × ".join(group_list) if group_list else "新刊情報"
+draw.text((55, 48), f"【{group_label} / {category}情報】", fill=(255, 255, 255), font=font_badge)
 
-# 出演者・タレント名（cast）を強調表示
-cast_display = new_item["cast"]
-draw.text((55, 140), f"◆ {cast_display}", fill=dark_text, font=font_cast)
-
-def wrap_text(text, max_chars=38):
+def wrap_text(text, max_chars=40):
     lines = []
     for paragraph in text.split("\n"):
         while len(paragraph) > max_chars:
@@ -105,38 +107,36 @@ def wrap_text(text, max_chars=38):
     return lines
 
 # タイトル（最大2行）
-y = 200
-for line in wrap_text(title, 30)[:2]:
+title_lines = wrap_text(title, 25)[:2]
+y = 148
+for line in title_lines:
     draw.text((55, y), line, fill=(30, 30, 35), font=font_title)
-    y += 46
+    y += 54
 
 # メモ（最大6行・1行40文字まで表示）
 y += 14
-for line in wrap_text(memo, 40)[:6]:
+memo_lines = wrap_text(memo, 40)[:6]
+for line in memo_lines:
     draw.text((55, y), line, fill=(65, 65, 75), font=font_memo)
-    y += 35
+    y += 36
 
-# 下部フッター（発売日・価格）
 draw.line([(55, H - 105), (W - 55, H - 105)], fill=accent, width=3)
-date_prefix = "配信日：" if item_format == "デジタル写真集" else "発売日："
-release_str = f"{date_prefix}{date}" if date else "予約受付中"
+release_str = f"発売日：{date}" if date else "予約受付中"
 price_str = f"価格：{price:,}円（税込）" if price else ""
 draw.text((55, H - 82), f"{release_str} ｜ {price_str}", fill=dark_text, font=font_footer)
 
 img.save("x_posts/latest_post.png")
 
-cast_tag = f"#{cast_display.replace(' ', '')}" if cast_display else ""
-post_text = f"""【新刊{item_format}情報】
+hashtags = " ".join([f"#{g}" for g in group_list])
+post_text = f"""【{group_label} {category}情報】
 
-{cast_display}
 『{title}』
-
 {memo}
 
-📅 {release_str}
-💰 {price_str}
+📅 発売日：{date}
+💰 価格：{price:,}円（税込）
 
-{cast_tag} #{genre} #写真集
+{hashtags} #アイドル雑誌 #写真集
 
 👇予約・詳細リンクはリプ欄へ！"""
 
