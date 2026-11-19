@@ -1,0 +1,72 @@
+name: 商品追加＆X告知画像生成
+
+on:
+  workflow_dispatch:
+    inputs:
+      raw_data:
+        description: '① ブックマークレットでコピーしたJSONを貼り付け'
+        required: true
+        type: string
+      groups:
+        description: '② グループ名（複数の場合はカンマ区切り 例: 櫻坂46,乃木坂46）'
+        required: true
+        default: '乃木坂46'
+        type: string
+      category:
+        description: '③ カテゴリー（雑誌 / 写真集 / グラビア本 / Blu-ray など）'
+        required: true
+        default: '雑誌'
+        type: choice
+        options:
+          - 雑誌
+          - 写真集
+          - グラビア本
+          - Blu-ray
+          - その他
+      af_html:
+        description: '④ 楽天アフィリエイトの「画像とテキスト」HTMLタグを丸ごと貼り付け（または商品URL）'
+        required: true
+        type: string
+      custom_memo:
+        description: '⑤ メモを手動で入れたい場合のみ入力（空欄なら自動要約）'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+
+      - name: Python と日本語フォント・Pillowを準備
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+          pip install pillow
+
+      - name: items.json更新とX告知画像生成
+        env:
+          RAW_DATA: ${{ github.event.inputs.raw_data }}
+          GROUPS: ${{ github.event.inputs.groups }}
+          CATEGORY: ${{ github.event.inputs.category }}
+          AF_HTML: ${{ github.event.inputs.af_html }}
+          CUSTOM_MEMO: ${{ github.event.inputs.custom_memo }}
+        run: python .github/scripts/add_item.py
+
+      - name: 変更をGitHubに保存（自動反映）
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add items.json x_posts/latest_post.png x_posts/latest_post.txt
+          git commit -m "Add new item via workflow"
+          git push
+
+      - name: 生成したX告知画像と投稿文を保存
+        uses: actions/upload-artifact@v4
+        with:
+          name: x-post-package
+          path: x_posts/
