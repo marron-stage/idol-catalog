@@ -13,23 +13,22 @@ on:
         default: '乃木坂46'
         type: string
       category:
-        description: '③ カテゴリー（雑誌 / 写真集 / グラビア本 / Blu-ray など）'
+        description: '③ カテゴリー'
         required: true
         default: '雑誌'
         type: choice
         options:
           - 雑誌
           - 写真集
-          - グラビア本
-          - Blu-ray
-          - その他
+          - デジタル写真集
+          - CD・Blu-ray
       af_html:
         description: '④ 楽天アフィリエイトの「画像とテキスト」HTMLタグを丸ごと貼り付け（または商品URL）'
         required: true
         type: string
       custom_memo:
-        description: '⑤ メモを手動で入れたい場合のみ入力（空欄なら自動要約）'
-        required: false
+        description: '⑤ 専用チャットで作った3行要約メモを貼り付け'
+        required: true
         type: string
 
 permissions:
@@ -45,7 +44,7 @@ jobs:
       - name: Python と日本語フォント・Pillowを準備
         run: |
           sudo apt-get update
-          sudo apt-get install -y fonts-noto-cjk
+          sudo apt-get install -y fonts-ipafont-gothic
           pip install pillow
 
       - name: items.json更新とX告知画像生成
